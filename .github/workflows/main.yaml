@@ -40,10 +40,10 @@ jobs:
 
     - name: 'Create env file'
       run: |
-      touch .env
-      echo export WEB3_INFURA_PROJECT_ID=${{ secrets.WEB3_INFURA_PROJECT_ID }} >> .env
-      echo export PRIVATE_KEY=${{ secrets.PRIVATE_KEY }} >> .env
-      cat .env
+        touch .env
+        echo export WEB3_INFURA_PROJECT_ID=${{ secrets.WEB3_INFURA_PROJECT_ID }} >> .env
+        echo export PRIVATE_KEY=${{ secrets.PRIVATE_KEY }} >> .env
+        cat .env
 
     - name: Run Tests
       run: brownie test
