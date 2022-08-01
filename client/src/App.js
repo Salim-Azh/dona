@@ -3,6 +3,7 @@ import './App.css'
 import {getWeb3} from "./getWeb3"
 import map from "./artifacts/deployments/map.json"
 import {getEthereum} from "./getEthereum"
+import Associations from "./components/Associations"
 
 class App extends Component {
 
@@ -131,7 +132,10 @@ class App extends Component {
         }
 
         if (!solidityStorage) {
-            return <div>Could not find a deployed contract. Check console for details.</div>
+            //return <div>Could not find a deployed contract. Check console for details.</div>
+            return (
+                    <Associations/>
+            )
         }
 
         const isAccountsUnlocked = accounts ? accounts.length > 0 : false
@@ -149,7 +153,7 @@ class App extends Component {
                     </p>
                     : null
             }
-
+            
             <h2>Solidity Storage Contract</h2>
             <div>The stored value is: {solidityValue}</div>
             <br/>
