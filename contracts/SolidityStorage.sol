@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity >=0.4.16 <0.7.0;
+pragma solidity ^0.8.15;
 
 contract SolidityStorage {
     uint256 storedData = 5;
