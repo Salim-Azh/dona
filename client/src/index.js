@@ -12,10 +12,12 @@ ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
       <CustomHeader/>
-      <Routes>
-        <Route path='/' element={<App/>} />
-        <Route path='/associations' element={<Associations/>} />
-      </Routes>
+      <div className='app-container'>
+        <Routes>
+          <Route path='/' element={<App/>} />
+          <Route path='/associations' element={<Associations/>} />
+        </Routes>
+      </div>
       <CustomFooter/>
     </BrowserRouter>
   </React.StrictMode>,
