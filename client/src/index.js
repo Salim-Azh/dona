@@ -7,6 +7,7 @@ import App from './App';
 import Associations from './components/Associations';
 import CustomHeader from './components/CustomHeader';
 import CustomFooter from './components/Footer';
+import { DonationForm } from './components/DonationForm';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -16,6 +17,7 @@ ReactDOM.render(
         <Routes>
           <Route path='/' element={<App/>} />
           <Route path='/associations' element={<Associations/>} />
+          <Route path='/associations/:id/donnate' element={<DonationForm/>} />
           <Route path='*' element={
             <h1>
               <p>There's nothing here!</p>

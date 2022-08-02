@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Link } from 'react-router-dom'
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -11,7 +12,7 @@ import Button from '@mui/material/Button'
 export function Associations() {
 
     function createData(id, name, field) {
-        return { name, field };
+        return { id, name, field };
       }
       
       const rows = [
@@ -43,7 +44,11 @@ export function Associations() {
                             {row.name}
                         </TableCell>
                         <TableCell align="right">{row.field}</TableCell>
-                        <TableCell align="right"> <Button variant="contained">Donate</Button> </TableCell>
+                        <TableCell align="right"> 
+                            <Link to= {`/associations/${row.id}/donnate`} >
+                                <Button variant="contained">Donate</Button>
+                            </Link>
+                        </TableCell>
                         </TableRow>
                     ))}
                     </TableBody>
