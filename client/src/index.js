@@ -16,6 +16,11 @@ ReactDOM.render(
         <Routes>
           <Route path='/' element={<App/>} />
           <Route path='/associations' element={<Associations/>} />
+          <Route path='*' element={
+            <h1>
+              <p>There's nothing here!</p>
+            </h1>
+          } />
         </Routes>
       </div>
       <CustomFooter/>
