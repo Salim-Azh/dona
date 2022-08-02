@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import * as serviceWorker from './serviceWorker';
 import './index.css';
@@ -9,7 +9,9 @@ import CustomHeader from './components/CustomHeader';
 import CustomFooter from './components/Footer';
 import { DonationForm } from './components/DonationForm';
 
-ReactDOM.render(
+const container = document.getElementById('root');
+const root = createRoot(container);
+root.render(
   <React.StrictMode>
     <BrowserRouter>
       <CustomHeader/>
@@ -27,9 +29,7 @@ ReactDOM.render(
       </div>
       <CustomFooter/>
     </BrowserRouter>
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+  </React.StrictMode>);
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
