@@ -1,4 +1,6 @@
 import * as React from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 import { Link } from 'react-router-dom'
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -8,44 +10,60 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button'
+import { CircularProgress } from '@mui/material';
 
 export function Associations() {
 
-    function createData(id, name, field) {
-        return { id, name, field };
-      }
-      
-      const rows = [
-        createData(1, 'Sea shepard', "Animal protection"),
-        createData(2, 'Green peace', "Ecological actions"),
-        createData(3, 'Croix rouge', "Charity association")
-      ];
+    const [data, setData] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    return (
+    useEffect(() => {
+        axios.get(`http://localhost:8080/api/associations`)
+        .then((response) => {
+            const fetchedData = response.data;
+            setData(fetchedData);
+            setError(null);
+          })
+          .catch((err) => {
+            setError(err.message);
+            setData(null);
+          })
+          .finally(() => {
+            setLoading(false);
+          });
+       }, []);
+
+       if(error) return <h1>Error while fetching data</h1>
+
+       return (
         <div>
             <h1>Associations</h1>
 
             <TableContainer component={Paper}>
+                {loading ? <CircularProgress /> : (
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
                     <TableHead>
                     <TableRow>
                         <TableCell>Association</TableCell>
-                        <TableCell align="right">Field</TableCell>
+                        <TableCell align="right">Domain</TableCell>
+                        <TableCell align="right">Contact</TableCell>
                         <TableCell align="right">Donate</TableCell>
                     </TableRow>
                     </TableHead>
                     <TableBody>
-                    {rows.map((row) => (
+                    {data.map((asso) => (
                         <TableRow
-                        key={row.id}
+                        key={asso._id}
                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                         >
                         <TableCell component="th" scope="row">
-                            {row.name}
+                            {asso.name}
                         </TableCell>
-                        <TableCell align="right">{row.field}</TableCell>
+                        <TableCell align="right">{asso.domain}</TableCell>
+                        <TableCell align="right">{asso.email_address}</TableCell>
                         <TableCell align="right"> 
-                            <Link to= {`/associations/${row.id}/donnate`} >
+                            <Link to= {`/associations/${asso.id}/donnate`} >
                                 <Button variant="contained">Donate</Button>
                             </Link>
                         </TableCell>
@@ -53,6 +71,7 @@ export function Associations() {
                     ))}
                     </TableBody>
                 </Table>
+                )}
             </TableContainer>
      </div>
 
