@@ -2,7 +2,6 @@ import * as React from 'react'
 import { Link } from 'react-router-dom'
 
 export function App() {
-    //TODO: Ajouter un Router au lieu de la page Associations
     return(
         <div>
             <h1>Welcome to DonaTrack!</h1>
