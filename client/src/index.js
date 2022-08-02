@@ -19,7 +19,7 @@ root.render(
         <Routes>
           <Route path='/' element={<App/>} />
           <Route path='/associations' element={<Associations/>} />
-          <Route path='/associations/:id/donnate' element={<DonationForm/>} />
+          <Route path='/associations/:id/donate' element={<DonationForm/>} />
           <Route path='*' element={
             <h1>
               <p>There's nothing here!</p>

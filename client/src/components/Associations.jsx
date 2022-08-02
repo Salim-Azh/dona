@@ -1,16 +1,16 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom'
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
+import { Link as RouterLink } from 'react-router-dom'
 import Paper from '@mui/material/Paper';
-import Button from '@mui/material/Button'
 import { CircularProgress } from '@mui/material';
+import Card from '@mui/material/Card';
+import CardActionArea from '@mui/material/CardActionArea';
+import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Grid';
+import CardHeader from '@mui/material/CardHeader';
+import Avatar from '@mui/material/Avatar';
 
 export function Associations() {
 
@@ -20,60 +20,52 @@ export function Associations() {
 
     useEffect(() => {
         axios.get(`http://localhost:8080/api/associations`)
-        .then((response) => {
-            const fetchedData = response.data;
-            setData(fetchedData);
-            setError(null);
-          })
-          .catch((err) => {
-            setError(err.message);
-            setData(null);
-          })
-          .finally(() => {
-            setLoading(false);
-          });
-       }, []);
+            .then((response) => {
+                const fetchedData = response.data;
+                setData(fetchedData);
+                setError(null);
+            })
+            .catch((err) => {
+                setError(err.message);
+                setData(null);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    }, []);
 
-       if(error) return <h1>Error while fetching data</h1>
+    if (error) return <h1>Error while fetching data</h1>
 
-       return (
+    return (
         <div>
             <h1>Associations</h1>
-
-            <TableContainer component={Paper}>
-                {loading ? <CircularProgress /> : (
-                <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                    <TableHead>
-                    <TableRow>
-                        <TableCell>Association</TableCell>
-                        <TableCell align="right">Domain</TableCell>
-                        <TableCell align="right">Contact</TableCell>
-                        <TableCell align="right">Donate</TableCell>
-                    </TableRow>
-                    </TableHead>
-                    <TableBody>
-                    {data.map((asso) => (
-                        <TableRow
-                        key={asso._id}
-                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                        >
-                        <TableCell component="th" scope="row">
-                            {asso.name}
-                        </TableCell>
-                        <TableCell align="right">{asso.domain}</TableCell>
-                        <TableCell align="right">{asso.email_address}</TableCell>
-                        <TableCell align="right"> 
-                            <Link to= {`/associations/${asso.id}/donnate`} >
-                                <Button variant="contained">Donate</Button>
-                            </Link>
-                        </TableCell>
-                        </TableRow>
+            {loading ? <CircularProgress /> : (
+                <Grid container spacing={2}>
+                    {data.map((association) => (
+                        <Grid item xs={4} key={association._id}>
+                                <Card variant='outlined' component={Paper}>
+                                <CardActionArea component={RouterLink} to={`/associations/${association._id}/donate`}>
+                                        <CardHeader
+                                            avatar={
+                                                <Avatar aria-label="association">
+                                                    {association.name[0]}
+                                                </Avatar>
+                                            }
+                                            title={association.name}
+                                            subheader={association.domain}
+                                        />
+                                        <CardContent>
+                                            <Typography variant="body2">
+                                                {association.description}
+                                            </Typography>
+                                        </CardContent>
+                                    </CardActionArea>
+                                </Card>
+                        </Grid>
                     ))}
-                    </TableBody>
-                </Table>
-                )}
-            </TableContainer>
-     </div>
+                </Grid>
+            )}
+        </div>
 
     )
 }
