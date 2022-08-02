@@ -17,6 +17,7 @@ contract DonationContract {
 
     function donate(address payable to_charity) public payable {
         require(msg.value > 0, 'The donation amount has to be greater than 0');
+        require(msg.sender != to_charity);
         to_charity.transfer(msg.value);
         emit Donation(to_charity,msg.sender, msg.value);
     }
