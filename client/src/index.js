@@ -1,12 +1,23 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import * as serviceWorker from './serviceWorker';
 import './index.css';
 import App from './App';
-import * as serviceWorker from './serviceWorker';
+import Associations from './components/Associations';
+import CustomHeader from './components/CustomHeader';
+import CustomFooter from './components/Footer';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <BrowserRouter>
+      <CustomHeader/>
+      <Routes>
+        <Route path='/' element={<App/>} />
+        <Route path='/associations' element={<Associations/>} />
+      </Routes>
+      <CustomFooter/>
+    </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')
 );

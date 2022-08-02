@@ -7,25 +7,21 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button'
-import CustomHeader from './CustomHeader';
-import { CustomFooter } from './Footer';
 
 export function Associations() {
 
-    function createData(name, field) {
+    function createData(id, name, field) {
         return { name, field };
       }
       
       const rows = [
-        createData('Sea shepard', "Animal protection"),
-        createData('Green peace', "Ecological actions"),
-        createData('Croix rouge', "Charity association")
+        createData(1, 'Sea shepard', "Animal protection"),
+        createData(2, 'Green peace', "Ecological actions"),
+        createData(3, 'Croix rouge', "Charity association")
       ];
 
     return (
         <div>
-            <CustomHeader/>
-
             <h1>Associations</h1>
 
             <TableContainer component={Paper}>
@@ -40,7 +36,7 @@ export function Associations() {
                     <TableBody>
                     {rows.map((row) => (
                         <TableRow
-                        key={row.name}
+                        key={row.id}
                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                         >
                         <TableCell component="th" scope="row">
@@ -53,8 +49,6 @@ export function Associations() {
                     </TableBody>
                 </Table>
             </TableContainer>
-            
-            <CustomFooter/>
      </div>
 
     )
