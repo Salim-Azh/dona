@@ -12,6 +12,7 @@ class Web3Form extends Component {
         chainid: null,
         solidityStorage: null,
         solidityValue: 0,
+        donationContract: null,
         solidityInput: 0,
     }
 
@@ -61,8 +62,10 @@ class Web3Form extends Component {
         }
         console.log(_chainID)
         const solidityStorage = await this.loadContract(_chainID,"SolidityStorage")
+        const donationContract = await this.loadContract(_chainID,"DonationContract")
+        console.log('Donation contract: ', donationContract)
 
-        if (!solidityStorage) {
+        if (!solidityStorage || !donationContract) {
             return
         }
 
@@ -71,7 +74,10 @@ class Web3Form extends Component {
         this.setState({
             solidityStorage,
             solidityValue,
+            donationContract
         })
+
+        console.log(this.state)
     }
 
     loadContract = async (chain, contractName) => {
@@ -115,6 +121,21 @@ class Web3Form extends Component {
             })
     }
 
+    execTransaction = async (e) => {
+        const {accounts, donationContract, solidityInput} = this.state
+        e.preventDefault()
+        const value = parseInt(solidityInput) * 1000000000000000000
+        if (isNaN(value)) {
+            alert("invalid value")
+            return
+        }
+        await donationContract.methods.donate('0xfA5a4C6a3221a31a322DfCca50fD433d7D681eb8').send({from: accounts[0], value: value})
+        //set(value).send({from: accounts[0]})
+            .on('receipt', async () => {
+                console.log('YESSS')
+            })
+    }
+
     render() {
 
         const {
@@ -154,7 +175,7 @@ class Web3Form extends Component {
             <h2>Solidity Storage Contract</h2>
             <div>The stored value is: {solidityValue}</div>
             <br/>
-            <form onSubmit={(e) => this.changeSolidity(e)}>
+            <form onSubmit={(e) => this.execTransaction(e)}>
                 <div>
                     <label>Change the value to: </label>
                     <br/>
