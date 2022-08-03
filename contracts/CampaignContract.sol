@@ -32,6 +32,8 @@ contract CampaignContract {
         owner = payable(msg.sender);
     }
 
+    function returnMappingValue(string memory key) public view returns (Campaign memory) { return campaigns[key]; }
+
     function createCampaign(string memory objectID ,address payable recipient) public{
         //require(msg.sender is a charity);
         Campaign storage newCampaign = campaigns[objectID];
