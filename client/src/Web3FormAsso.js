@@ -3,7 +3,8 @@ import { getWeb3 } from "./getWeb3"
 import map from "./artifacts/deployments/map.json"
 import { getEthereum } from "./getEthereum"
 import axios from "axios"
-import { Alert } from '@mui/material';
+import { Alert, Button, TextField, Grid } from '@mui/material';
+
 
 
 class Web3FormAsso extends Component {
@@ -129,7 +130,7 @@ class Web3FormAsso extends Component {
                     solidityValue: await solidityStorage.methods.get().call()
                 })
             })
-            .on('error', () => this.setState({failure: true}));
+            .on('error', () => this.setState({ failure: true }));
     }
 
     execTransaction = async (e) => {
@@ -171,10 +172,8 @@ class Web3FormAsso extends Component {
         const isAccountsUnlocked = accounts ? accounts.length > 0 : false
 
         return (<div className="Web3Form">
-            <h1>Your Brownie Mix is installed and ready.</h1>
             <p>
-                If your contracts compiled and deployed successfully, you can see the current
-                storage values below.
+                Thanks for your interrest in this association's work!
             </p>
             {
                 !isAccountsUnlocked ?
@@ -184,23 +183,21 @@ class Web3FormAsso extends Component {
                     : null
             }
 
-            <h2>Solidity Storage Contract</h2>
-            <div>The stored value is: {solidityValue}</div>
             <br />
             <form onSubmit={(e) => this.execTransaction(e)}>
-                <div>
-                    <label>Change the value to: </label>
-                    <br />
-                    <input
-                        name="solidityInput"
-                        type="text"
-                        value={solidityInput}
-                        onChange={(e) => this.setState({ solidityInput: e.target.value })}
-                    />
-                    <br />
-                    <button type="submit" disabled={!isAccountsUnlocked}>Submit Association</button>
-
-                </div>
+                <Grid container spacing={2} alignItems='center' justifyContent='center' paddingBottom={3}>
+                    <Grid item xs={4}>
+                        <TextField
+                            name="solidityInput"
+                            type="text"
+                            value={solidityInput}
+                            onChange={(e) => this.setState({ solidityInput: e.target.value })}
+                        />
+                    </Grid>
+                    <Grid item>
+                        <Button type="submit" disabled={!isAccountsUnlocked} variant='contained'>Send</Button>
+                    </Grid>
+                </Grid>
             </form>
             {this.state.success && (<Alert severity="success">Transaction successfully sent!</Alert>)}
             {this.state.failure && (<Alert severity="error">Error while sending the transaction...</Alert>)}

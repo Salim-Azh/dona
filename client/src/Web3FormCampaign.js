@@ -1,9 +1,8 @@
-import React, {Component} from "react"
-import {getWeb3} from "./getWeb3"
+import React, { Component } from "react"
+import { getWeb3 } from "./getWeb3"
 import map from "./artifacts/deployments/map.json"
-import {getEthereum} from "./getEthereum"
-import { Alert } from '@mui/material';
-
+import { getEthereum } from "./getEthereum"
+import { Alert, TextField, Grid, Button } from '@mui/material';
 
 class Web3FormCampaign extends Component {
 
@@ -56,17 +55,17 @@ class Web3FormCampaign extends Component {
             return
         }
         console.log(this.state.chainid)
-        
+
         var _chainID = 0;
-        if (this.state.chainid === 42){
+        if (this.state.chainid === 42) {
             _chainID = 42;
         }
-        if (this.state.chainid === 1337){
+        if (this.state.chainid === 1337) {
             _chainID = "dev"
         }
 
-        const solidityStorage = await this.loadContract(_chainID,"SolidityStorage")
-        const donationContract = await this.loadContract(_chainID,"DonationContract")
+        const solidityStorage = await this.loadContract(_chainID, "SolidityStorage")
+        const donationContract = await this.loadContract(_chainID, "DonationContract")
         const campaignContract = await this.loadContract(_chainID, "CampaignContract")
 
         if (!solidityStorage || !donationContract || !campaignContract) {
@@ -86,7 +85,7 @@ class Web3FormCampaign extends Component {
 
     loadContract = async (chain, contractName) => {
         // Load a deployed contract instance into a web3 contract object
-        const {web3} = this.state
+        const { web3 } = this.state
 
         // Get the address of the most recent deployment from the deployment map
         let address
@@ -110,14 +109,14 @@ class Web3FormCampaign extends Component {
     }
 
     changeSolidity = async (e) => {
-        const {accounts, solidityStorage, solidityInput} = this.state
+        const { accounts, solidityStorage, solidityInput } = this.state
         e.preventDefault()
         const value = parseInt(solidityInput)
         if (isNaN(value)) {
             alert("invalid value")
             return
         }
-        await solidityStorage.methods.set(value).send({from: accounts[0]})
+        await solidityStorage.methods.set(value).send({ from: accounts[0] })
             .on('receipt', async () => {
                 this.setState({
                     solidityValue: await solidityStorage.methods.get().call()
@@ -126,30 +125,30 @@ class Web3FormCampaign extends Component {
     }
 
     execTransaction = async (e) => {
-        const {accounts, donationContract, solidityInput} = this.state
+        const { accounts, donationContract, solidityInput } = this.state
         e.preventDefault()
         const value = parseInt(solidityInput) * 1000000000000000000
         if (isNaN(value)) {
             alert("invalid value")
             return
         }
-        await donationContract.methods.donate('0xfA5a4C6a3221a31a322DfCca50fD433d7D681eb8').send({from: accounts[0], value: value})
-        //set(value).send({from: accounts[0]})
+        await donationContract.methods.donate('0xfA5a4C6a3221a31a322DfCca50fD433d7D681eb8').send({ from: accounts[0], value: value })
+            //set(value).send({from: accounts[0]})
             .on('receipt', async () => {
                 console.log('YESSS')
             })
     }
 
     execTransactionToCampaign = async (e) => {
-        const {accounts, solidityInput, campaignContract} = this.state
+        const { accounts, solidityInput, campaignContract } = this.state
         e.preventDefault()
         const value = parseInt(solidityInput) * 1000000000000000000
         if (isNaN(value)) {
             alert("invalid value")
             return
         }
-        await campaignContract.methods.donateToCampaign(this.props.campaign).send({from: accounts[0], value: value})
-        //set(value).send({from: accounts[0]})
+        await campaignContract.methods.donateToCampaign(this.props.campaign).send({ from: accounts[0], value: value })
+            //set(value).send({from: accounts[0]})
             .on('receipt', async () => {
                 let test = await campaignContract.methods.returnMappingValue(this.props.campaign).call();
                 this.setState({ success: true });
@@ -178,41 +177,39 @@ class Web3FormCampaign extends Component {
 
         const isAccountsUnlocked = accounts ? accounts.length > 0 : false
 
-        return (<div className="Web3Form">
-            <h1>Your Brownie Mix is installed and ready.</h1>
-            <p>
-                If your contracts compiled and deployed successfully, you can see the current
-                storage values below.
-            </p>
-            {
-                !isAccountsUnlocked ?
-                    <p><strong>Connect with Metamask and refresh the page to
-                        be able to edit the storage fields.</strong>
-                    </p>
-                    : null
-            }
-            
-            <h2>Solidity Storage Contract</h2>
-            <div>The stored value is: {solidityValue}</div>
-            <br/>
-            <form onSubmit={(e) => this.execTransactionToCampaign(e)}>
-                <div>
-                    <label>Change the value to: </label>
-                    <br/>
-                    <input
-                        name="solidityInput"
-                        type="text"
-                        value={solidityInput}
-                        onChange={(e) => this.setState({solidityInput: e.target.value})}
-                    />
-                    <br/>
-                    <button type="submit" disabled={!isAccountsUnlocked}>Submit Association</button>
+        return (
+            <div className="Web3Form">
+                <p>
+                    Thanks for for your interrest in this campaign!
+                </p>
+                {
+                    !isAccountsUnlocked ?
+                        <p><strong>Connect with Metamask and refresh the page to
+                            be able to edit the storage fields.</strong>
+                        </p>
+                        : null
+                }
 
-                </div>
-            </form>
-            {this.state.success && (<Alert severity="success">Transaction successfully sent!</Alert>)}
-            {this.state.failure && (<Alert severity="error">Error while sending the transaction...</Alert>)}
-        </div>)
+                <br />
+                <form onSubmit={(e) => this.execTransactionToCampaign(e)}>
+                    <Grid container spacing={2} alignItems='center' justifyContent='center' paddingBottom={3}>
+                        <Grid item xs={4}>
+                            <TextField
+                                name="solidityInput"
+                                type="text"
+                                variant="outlined"
+                                value={solidityInput}
+                                onChange={(e) => this.setState({ solidityInput: e.target.value })}
+                            />
+                        </Grid>
+                        <Grid item>
+                            <Button type="submit" disabled={!isAccountsUnlocked} variant='contained'>Send</Button>
+                        </Grid>
+                    </Grid>
+                </form>
+                {this.state.success && (<Alert severity="success">Transaction successfully sent!</Alert>)}
+                {this.state.failure && (<Alert severity="error">Error while sending the transaction...</Alert>)}
+            </div>)
     }
 }
 
