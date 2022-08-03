@@ -41,11 +41,8 @@ class Web3FormAsso extends Component {
         const chainid = parseInt(await web3.eth.getChainId())
 
         const data = await axios.get(`http://localhost:8080/api/associations/${this.props.recipient}`);
-        console.log('RECIP = ', this.props.recipient);
-        console.log('DATA = ', data);
         const association = data.data;
         
-        console.log('ASSO = ', association);
         this.setState({
             web3,
             accounts,
