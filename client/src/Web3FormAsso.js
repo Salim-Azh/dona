@@ -2,6 +2,7 @@ import React, {Component} from "react"
 import {getWeb3} from "./getWeb3"
 import map from "./artifacts/deployments/map.json"
 import {getEthereum} from "./getEthereum"
+import axios from "axios"
 
 
 class Web3FormAsso extends Component {
@@ -14,7 +15,8 @@ class Web3FormAsso extends Component {
         solidityValue: 0,
         donationContract: null,
         solidityInput: 0,
-        campaignContract: null
+        campaignContract: null,
+        association: null
     }
 
     componentDidMount = async () => {
@@ -38,10 +40,17 @@ class Web3FormAsso extends Component {
         // Get the current chain id
         const chainid = parseInt(await web3.eth.getChainId())
 
+        const data = await axios.get(`http://localhost:8080/api/associations/${this.props.recipient}`);
+        console.log('RECIP = ', this.props.recipient);
+        console.log('DATA = ', data);
+        const association = data.data;
+        
+        console.log('ASSO = ', association);
         this.setState({
             web3,
             accounts,
-            chainid
+            chainid,
+            association
         }, await this.loadInitialContracts)
 
     }
@@ -130,7 +139,7 @@ class Web3FormAsso extends Component {
             alert("invalid value")
             return
         }
-        await donationContract.methods.donate('0xfA5a4C6a3221a31a322DfCca50fD433d7D681eb8').send({from: accounts[0], value: value})
+        await donationContract.methods.donate(this.state.association.account_address).send({from: accounts[0], value: value})
         //set(value).send({from: accounts[0]})
             .on('receipt', async () => {
                 console.log('YESSS')

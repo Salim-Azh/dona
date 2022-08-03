@@ -71,7 +71,7 @@ export function Association({isAssociation}) {
                                         <Typography variant="body2">
                                             Campaign
                                         </Typography>
-                                        {isAssociation && (<Web3CreateCampaign />)}
+                                        {isAssociation && (<Web3CreateCampaign association={association} campaign={campaign}/>)}
                                     </CardContent>
                                 </Card>
                             </Grid>

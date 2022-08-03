@@ -145,10 +145,10 @@ class Web3FormCampaign extends Component {
             alert("invalid value")
             return
         }
-        await campaignContract.methods.donateToCampaign('1').send({from: accounts[0], value: value})
+        await campaignContract.methods.donateToCampaign(this.props.campaign).send({from: accounts[0], value: value})
         //set(value).send({from: accounts[0]})
             .on('receipt', async () => {
-                let test = await campaignContract.methods.returnMappingValue('1').call();
+                let test = await campaignContract.methods.returnMappingValue(this.props.campaign).call();
                 console.log(test);
             })
     }

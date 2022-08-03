@@ -12,7 +12,7 @@ export function CampaignDonationForm() {
         <div className='container'>
             <Paper>
                 <h1>Campaign: {params.id}</h1>
-                <Web3FormCampaign/>
+                <Web3FormCampaign campaign={params.id}/>
             </Paper>
         </div>
     )

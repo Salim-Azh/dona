@@ -96,11 +96,12 @@ class Web3CreateCampaign extends Component {
     }
 
     createCampaigns = async () => {
+        console.log('PROPS = ', this.props);
         const {campaignContract, accounts} = this.state
   
-        if(campaignContract) await campaignContract.methods.createCampaign('1','0xfA5a4C6a3221a31a322DfCca50fD433d7D681eb8').send({from: accounts[0]})
+        if(campaignContract) await campaignContract.methods.createCampaign(this.props.campaign._id,this.props.association.account_address).send({from: accounts[0]})
         .on('receipt', async () => {
-            let test = await campaignContract.methods.returnMappingValue('1').call();
+            let test = await campaignContract.methods.returnMappingValue(this.props.campaign._id).call();
             console.log(test);
         })
     }
@@ -108,9 +109,9 @@ class Web3CreateCampaign extends Component {
     withdraw = async () => {
         const {campaignContract, accounts} = this.state
   
-        if(campaignContract) await campaignContract.methods.withdrawFunds('1').send({from: accounts[0]})
+        if(campaignContract) await campaignContract.methods.withdrawFunds(this.props.campaign._id).send({from: accounts[0]})
         .on('receipt', async () => {
-            let test = await campaignContract.methods.returnMappingValue('1').call();
+            let test = await campaignContract.methods.returnMappingValue(this.props.campaign._id).call();
             console.log(test);
         })
     }
