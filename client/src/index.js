@@ -5,6 +5,7 @@ import * as serviceWorker from './serviceWorker';
 import './index.css';
 import App from './App';
 import Associations from './components/Associations';
+import Association from './components/Association';
 import CustomHeader from './components/CustomHeader';
 import CustomFooter from './components/Footer';
 import { DonationForm } from './components/DonationForm';
@@ -19,6 +20,7 @@ root.render(
         <Routes>
           <Route path='/' element={<App/>} />
           <Route path='/associations' element={<Associations/>} />
+          <Route path='/associations/:id' element={<Association />} />
           <Route path='/associations/:id/donate' element={<DonationForm/>} />
           <Route path='*' element={
             <h1>

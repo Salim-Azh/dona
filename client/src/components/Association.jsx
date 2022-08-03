@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { useState, useEffect, useParams } from 'react';
+import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import Paper from '@mui/material/Paper';
 import { CircularProgress } from '@mui/material';
@@ -18,10 +19,11 @@ export function Association() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    useEffect(() => {
+    useEffect( () => {
         axios.get(`http://localhost:8080/api/associations/${params.id}`)
             .then((response) => {
                 const fetchedData = response.data;
+                console.log('data = ', fetchedData)
                 setData(fetchedData);
                 setError(null);
             })
@@ -34,7 +36,7 @@ export function Association() {
             });
     }, []);
 
-    if (error) return <h1>Error while fetching data</h1>
+    if (error || !data) return <h1>Error while fetching data</h1>
 
     return (
         <div>
