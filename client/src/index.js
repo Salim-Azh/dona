@@ -8,6 +8,7 @@ import Associations from './components/Associations';
 import Association from './components/Association';
 import CustomHeader from './components/CustomHeader';
 import CustomFooter from './components/Footer';
+import NewCampaignForm from './components/NewCampaignForm'
 import { DonationForm } from './components/DonationForm';
 import { CampaignDonationForm } from './components/CampaignDonationForm';
 
@@ -24,6 +25,8 @@ root.render(
           <Route path='/associations/:id' element={<Association />} />
           <Route path='/associations/:id/donate' element={<DonationForm/>} />
           <Route path='/campaign/:id/donate' element={<CampaignDonationForm/>} />
+          <Route path='/associations/:id/campaign' element={<NewCampaignForm/>} />
+
           <Route path='*' element={
             <h1>
               <p>There's nothing here!</p>

@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link as RouterLink } from 'react-router-dom';
 import axios from 'axios';
 import Paper from '@mui/material/Paper';
-import { CircularProgress } from '@mui/material';
+import { Button, CircularProgress } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardActionArea from '@mui/material/CardActionArea';
@@ -12,6 +12,7 @@ import Grid from '@mui/material/Grid';
 import CardHeader from '@mui/material/CardHeader';
 import Avatar from '@mui/material/Avatar';
 import Web3CreateCampaign from '../Web3CreateCampaign';
+import { Link } from 'react-router-dom';
 
 export function Association() {
 
@@ -44,6 +45,9 @@ export function Association() {
     return (
         <div>
             <h1>{data.name}</h1>
+
+            <Button component={Link} to={`/associations/${params.id}/campaign`} variant="outlined">Add new campaign</Button>
+
             {loading ? <CircularProgress /> : (
                 <Grid container spacing={2}>
                     {data.campaigns.map((campaign) => (
