@@ -64,7 +64,6 @@ export function Association() {
                                                 Campaign
                                             </Typography>
                                             <Web3CreateCampaign/>
-
                                         </CardContent>
                                 </Card>
                         </Grid>
