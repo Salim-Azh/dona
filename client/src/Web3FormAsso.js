@@ -4,7 +4,7 @@ import map from "./artifacts/deployments/map.json"
 import {getEthereum} from "./getEthereum"
 
 
-class Web3Form extends Component {
+class Web3FormAsso extends Component {
 
     state = {
         web3: null,
@@ -14,6 +14,7 @@ class Web3Form extends Component {
         solidityValue: 0,
         donationContract: null,
         solidityInput: 0,
+        campaignContract: null
     }
 
     componentDidMount = async () => {
@@ -60,12 +61,12 @@ class Web3Form extends Component {
         if (this.state.chainid === 1337){
             _chainID = "dev"
         }
-        console.log(_chainID)
+
         const solidityStorage = await this.loadContract(_chainID,"SolidityStorage")
         const donationContract = await this.loadContract(_chainID,"DonationContract")
-        console.log('Donation contract: ', donationContract)
+        const campaignContract = await this.loadContract(_chainID, "CampaignContract")
 
-        if (!solidityStorage || !donationContract) {
+        if (!solidityStorage || !donationContract || !campaignContract) {
             return
         }
 
@@ -74,10 +75,10 @@ class Web3Form extends Component {
         this.setState({
             solidityStorage,
             solidityValue,
-            donationContract
+            donationContract,
+            campaignContract
         })
 
-        console.log(this.state)
     }
 
     loadContract = async (chain, contractName) => {
@@ -186,7 +187,7 @@ class Web3Form extends Component {
                         onChange={(e) => this.setState({solidityInput: e.target.value})}
                     />
                     <br/>
-                    <button type="submit" disabled={!isAccountsUnlocked}>Submit</button>
+                    <button type="submit" disabled={!isAccountsUnlocked}>Submit Association</button>
 
                 </div>
             </form>
@@ -194,4 +195,4 @@ class Web3Form extends Component {
     }
 }
 
-export default Web3Form
+export default Web3FormAsso

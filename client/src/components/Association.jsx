@@ -11,6 +11,7 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import CardHeader from '@mui/material/CardHeader';
 import Avatar from '@mui/material/Avatar';
+import Web3CreateCampaign from '../Web3CreateCampaign';
 
 export function Association() {
 
@@ -39,6 +40,7 @@ export function Association() {
 
     if (error || !data) return <h1>Error while fetching data</h1>
 
+
     return (
         <div>
             <h1>{data.name}</h1>
@@ -47,7 +49,7 @@ export function Association() {
                     {data.campaigns.map((campaign) => (
                         <Grid item xs={4} key={campaign.name}>
                                 <Card variant='outlined' component={Paper}>
-                                <CardActionArea component={RouterLink} to={`/associations/${data._id}/${campaign._id}/donate`}>
+                                <CardActionArea component={RouterLink} to={`/campaign/${campaign._id}/donate`}>
                                         <CardHeader
                                             avatar={
                                                 <Avatar aria-label="association">
@@ -56,12 +58,14 @@ export function Association() {
                                             }
                                             title={campaign.name}
                                         />
+                                        </CardActionArea>
                                         <CardContent>
                                             <Typography variant="body2">
                                                 Campaign
                                             </Typography>
+                                            <Web3CreateCampaign/>
+
                                         </CardContent>
-                                        </CardActionArea>
                                 </Card>
                         </Grid>
                     ))}

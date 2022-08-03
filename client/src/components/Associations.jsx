@@ -11,6 +11,7 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import CardHeader from '@mui/material/CardHeader';
 import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button'
 
 export function Associations() {
 
@@ -60,6 +61,7 @@ export function Associations() {
                                             </Typography>
                                         </CardContent>
                                     </CardActionArea>
+                                    <RouterLink to={`/associations/${association._id}/donate`} component={Button}> Donate</RouterLink>
                                 </Card>
                         </Grid>
                     ))}

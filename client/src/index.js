@@ -9,6 +9,7 @@ import Association from './components/Association';
 import CustomHeader from './components/CustomHeader';
 import CustomFooter from './components/Footer';
 import { DonationForm } from './components/DonationForm';
+import { CampaignDonationForm } from './components/CampaignDonationForm';
 
 const container = document.getElementById('root');
 const root = createRoot(container);
@@ -22,7 +23,7 @@ root.render(
           <Route path='/associations' element={<Associations/>} />
           <Route path='/associations/:id' element={<Association />} />
           <Route path='/associations/:id/donate' element={<DonationForm/>} />
-          <Route path='/associations/:id/:cid/donate' element={<DonationForm/>} />
+          <Route path='/campaign/:id/donate' element={<CampaignDonationForm/>} />
           <Route path='*' element={
             <h1>
               <p>There's nothing here!</p>
