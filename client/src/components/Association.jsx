@@ -12,7 +12,6 @@ import Grid from '@mui/material/Grid';
 import CardHeader from '@mui/material/CardHeader';
 import Avatar from '@mui/material/Avatar';
 import Web3CreateCampaign from '../Web3CreateCampaign';
-import Button from '@mui/material/Button'
 import { Link } from 'react-router-dom';
 
 export function Association({isAssociation}) {
@@ -53,6 +52,7 @@ export function Association({isAssociation}) {
                 {isAssociation && (<p>My campaigns: </p>)}
                     {!isAssociation && (<p>Or check for their campaigns and contribute to one of them specifically:</p>)}
                     {isAssociation && ( <Button component={Link} to={`/associations/${params.id}/campaign`} variant="outlined">Add new campaign</Button>)}
+                    <br/><br/>
                     <Grid container spacing={2}>
                         {association.campaigns.map((campaign) => (
                             <Grid item xs={3} key={campaign.name}>

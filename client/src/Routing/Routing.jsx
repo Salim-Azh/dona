@@ -6,6 +6,7 @@ import Association from '../components/Association';
 import { DonationForm } from '../components/DonationForm';
 import { CampaignDonationForm } from '../components/CampaignDonationForm';
 import detectEthereumProvider from '@metamask/detect-provider';
+import NewCampaignForm from '../components/NewCampaignForm';
 import { useState } from 'react'
 import axios from 'axios';
 import { getWeb3 } from '../getWeb3';
@@ -57,6 +58,7 @@ export function Routing() {
                 {provider && (<Route path='/associations/:id' element={<Association isAssociation={isAssociation}/>} />)}
                 {provider && (<Route path='/associations/:id/donate' element={<DonationForm />} />)}
                 {provider && (<Route path='/campaign/:id/donate' element={<CampaignDonationForm />} />)}
+                {provider && (<Route path='/associations/:id/campaign' element={<NewCampaignForm/>} />)}
                 <Route path='*' element={
                     <h1>
                         <p>There's nothing here...</p>
