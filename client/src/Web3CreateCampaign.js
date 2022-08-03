@@ -102,7 +102,6 @@ class Web3CreateCampaign extends Component {
         if(campaignContract) await campaignContract.methods.createCampaign(this.props.campaign._id,this.props.association.account_address).send({from: accounts[0]})
         .on('receipt', async () => {
             let test = await campaignContract.methods.returnMappingValue(this.props.campaign._id).call();
-            console.log(test);
         })
     }
 
