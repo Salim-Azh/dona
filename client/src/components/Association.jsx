@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link as RouterLink } from 'react-router-dom';
 import axios from 'axios';
 import Paper from '@mui/material/Paper';
-import { CircularProgress } from '@mui/material';
+import { Button, CircularProgress } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardActionArea from '@mui/material/CardActionArea';
@@ -13,6 +13,7 @@ import CardHeader from '@mui/material/CardHeader';
 import Avatar from '@mui/material/Avatar';
 import Web3CreateCampaign from '../Web3CreateCampaign';
 import Button from '@mui/material/Button'
+import { Link } from 'react-router-dom';
 
 export function Association({isAssociation}) {
 
@@ -49,7 +50,9 @@ export function Association({isAssociation}) {
                     {!isAssociation && (<Button variant='contained' component={RouterLink} to={`/associations/${association._id}/donate`}>Donate to the associaton</Button>)}
                 </Grid>
                 <Grid item xs={12}>
-                    <p>Or check for their campaigns and contribute to one of them specifically:</p>
+                {isAssociation && (<p>My campaigns: </p>)}
+                    {!isAssociation && (<p>Or check for their campaigns and contribute to one of them specifically:</p>)}
+                    {isAssociation && ( <Button component={Link} to={`/associations/${params.id}/campaign`} variant="outlined">Add new campaign</Button>)}
                     <Grid container spacing={2}>
                         {association.campaigns.map((campaign) => (
                             <Grid item xs={3} key={campaign.name}>
