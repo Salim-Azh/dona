@@ -3,11 +3,7 @@ pragma solidity ^0.8.15;
 
 contract CampaignContract {
 
-    uint public nbContributors;
-    uint public raisedFunds;
-    uint public balance;
     address payable public owner;
-    bool public completed;
 
     event Donation(
         address indexed to,
@@ -22,41 +18,47 @@ contract CampaignContract {
     );
 
     struct Campaign {
-        string title;
-        string description;
         bool completed; 
+        uint nbContributors;
+        uint raisedFunds;
+        uint balance;
         address payable recipient;
-        uint256 balance;
     }
+
+    mapping(string => Campaign) public campaigns;
+
 
     constructor(){
         owner = payable(msg.sender);
-        nbContributors = 0;
-        balance = 0;
-        completed=false;
     }
 
-    function donateToCampaign() public payable {
+    function createCampaign(string memory objectID ,address payable recipient) public{
+        //require(msg.sender is a charity);
+        Campaign storage newCampaign = campaigns[objectID];
+        newCampaign.recipient = recipient;
+        newCampaign.balance = 0;
+        newCampaign.raisedFunds = 0;
+        newCampaign.nbContributors =0;
+        newCampaign.completed = false;
+    }
+
+    function donateToCampaign(string memory objectID) public payable {
         require(msg.value > 0, 'The donation amount has to be greater than 0');
-        require(completed==false);
-        balance += msg.value;
-        raisedFunds+=msg.value;
-        nbContributors++;
-        emit Donation(address(this), msg.sender, msg.value);
+        Campaign storage campaign = campaigns[objectID];
+        require(campaign.completed==false);
+        campaign.balance += msg.value;
+        campaign.raisedFunds+=msg.value;
+        campaign.nbContributors++;
+        emit Donation(campaign.recipient, msg.sender, msg.value);
     }
 
-    function withdrawFunds() public{
-        require(msg.sender == owner);
-        require(balance>0);
-        owner.transfer(balance);
-        emit Withdrawn(msg.sender, address(this), balance);
-        balance = 0;
-        completed=true;
+    function withdrawFunds(string memory objectID) public{
+        Campaign storage campaign = campaigns[objectID];
+        require(msg.sender == campaign.recipient);
+        require(campaign.balance>0);
+        campaign.recipient.transfer(campaign.balance);
+        emit Withdrawn(msg.sender, address(this), campaign.balance);
+        campaign.balance = 0;
+        campaign.completed=true;
     }
-
-    /*
-    function getBalance() public view returns(uint) {
-        return address(this).balance;
-    }
-    */
 }
