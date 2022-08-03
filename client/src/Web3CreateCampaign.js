@@ -49,7 +49,6 @@ class Web3CreateCampaign extends Component {
             // Wrong Network!
             return
         }
-        console.log(this.state.chainid)
         
         var _chainID = 0;
         if (this.state.chainid === 42){

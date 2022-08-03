@@ -1,18 +1,21 @@
-import * as React from 'react'
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import axios from 'axios';
-import { getWeb3 } from './getWeb3';
+import React from 'react';
+import { Routes, Route } from 'react-router-dom'
+import App from '../App';
+import Associations from '../components/Associations';
+import Association from '../components/Association';
+import { DonationForm } from '../components/DonationForm';
+import { CampaignDonationForm } from '../components/CampaignDonationForm';
 import detectEthereumProvider from '@metamask/detect-provider';
-import { Button, CircularProgress } from '@mui/material';
+import { useState } from 'react'
+import axios from 'axios';
+import { getWeb3 } from '../getWeb3';
 
-export function App() {
+export function Routing() {
 
     async function getProvider() { await detectEthereumProvider() };
     const provider = getProvider();
 
     const [isAssociation, setIsAssociation] = useState(false);
-    const [connectedUser, setConnectedUser] = useState({});
     const [loading, setLoading] = useState(true);
 
     async function start() {
@@ -33,12 +36,11 @@ export function App() {
                         //console.log('reload donator')
                         //window.location.replace('/associations');
                     }
-                    setConnectedUser(user);
                 })
         } catch (error) {
             console.log(error);
         }
-        finally{
+        finally {
             setLoading(false);
         }
     }
@@ -47,19 +49,22 @@ export function App() {
         start();
     }, [isAssociation]);
 
-    let content;
-    if(!provider || !connectedUser) content = <p>You need to be connected to your MetaMask account to use this website.</p>
-    else if (connectedUser && connectedUser.isAssociation) content = connectedUser.isAssociation && (<Button to={`/associations/${connectedUser._id}`} component={Link} variant='contained'>Get started as an Association</Button>)
-    else if (connectedUser) content = <Button to='/associations' component={Link} variant='contained'>Get started as a Donator</Button>
-    
-    return (
-        <div>
-            <h1>Welcome to DonaTrack!</h1>
-            <div style={{display: 'flex', justifyContent: 'center'}}>
-                {loading ? (<CircularProgress />) : content}
-            </div>
-        </div>
+    if (!loading) return (
+        <>
+            <Routes>
+                <Route path='/' element={<App />} />
+                {provider && (<Route path='/associations' element={<Associations />} />)}
+                {provider && (<Route path='/associations/:id' element={<Association isAssociation={isAssociation}/>} />)}
+                {provider && (<Route path='/associations/:id/donate' element={<DonationForm />} />)}
+                {provider && (<Route path='/campaign/:id/donate' element={<CampaignDonationForm />} />)}
+                <Route path='*' element={
+                    <h1>
+                        <p>There's nothing here...</p>
+                    </h1>
+                } />
+            </Routes>
+        </>
     )
-};
+}
 
-export default App;
+export default Routing;

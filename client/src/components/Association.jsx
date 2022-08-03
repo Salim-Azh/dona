@@ -12,44 +12,49 @@ import Grid from '@mui/material/Grid';
 import CardHeader from '@mui/material/CardHeader';
 import Avatar from '@mui/material/Avatar';
 import Web3CreateCampaign from '../Web3CreateCampaign';
+import Button from '@mui/material/Button'
 
-export function Association() {
+export function Association({isAssociation}) {
 
     const params = useParams();
-
-    const [data, setData] = useState(null);
+    
+    const [association, setAssociation] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    useEffect( () => {
+    useEffect(() => {
         axios.get(`http://localhost:8080/api/associations/${params.id}`)
             .then((response) => {
                 const fetchedData = response.data;
-                console.log('data = ', fetchedData)
-                setData(fetchedData);
+                setAssociation(fetchedData);
                 setError(null);
             })
             .catch((err) => {
                 setError(err.message);
-                setData(null);
+                setAssociation(null);
             })
             .finally(() => {
                 setLoading(false);
             });
-    }, []);
+    }, [loading, params]);
 
-    if (error || !data) return <h1>Error while fetching data</h1>
-
-
-    return (
+    if (loading) return <CircularProgress />
+    else if (error || !association) return <h1>Error while fetching data</h1>
+    else return (
         <div>
-            <h1>{data.name}</h1>
-            {loading ? <CircularProgress /> : (
-                <Grid container spacing={2}>
-                    {data.campaigns.map((campaign) => (
-                        <Grid item xs={4} key={campaign.name}>
+            <Grid container spacing={3} >
+                <Grid item xs={12}>
+                    <h1>{association.name}</h1>
+                    <p>{association.description}</p>
+                    {!isAssociation && (<Button variant='contained' component={RouterLink} to={`/associations/${association._id}/donate`}>Donate to the associaton</Button>)}
+                </Grid>
+                <Grid item xs={12}>
+                    <p>Or check for their campaigns and contribute to one of them specifically:</p>
+                    <Grid container spacing={2}>
+                        {association.campaigns.map((campaign) => (
+                            <Grid item xs={3} key={campaign.name}>
                                 <Card variant='outlined' component={Paper}>
-                                <CardActionArea component={RouterLink} to={`/campaign/${campaign._id}/donate`}>
+                                    <CardActionArea component={RouterLink} to={isAssociation ? '' : `/campaign/${campaign._id}/donate`}>
                                         <CardHeader
                                             avatar={
                                                 <Avatar aria-label="association">
@@ -58,20 +63,20 @@ export function Association() {
                                             }
                                             title={campaign.name}
                                         />
-                                        </CardActionArea>
-                                        <CardContent>
-                                            <Typography variant="body2">
-                                                Campaign
-                                            </Typography>
-                                            <Web3CreateCampaign/>
-                                        </CardContent>
+                                    </CardActionArea>
+                                    <CardContent>
+                                        <Typography variant="body2">
+                                            Campaign
+                                        </Typography>
+                                        {isAssociation && (<Web3CreateCampaign />)}
+                                    </CardContent>
                                 </Card>
-                        </Grid>
-                    ))}
+                            </Grid>
+                        ))}
+                    </Grid>
                 </Grid>
-            )}
+            </Grid>
         </div>
-
     )
 }
 

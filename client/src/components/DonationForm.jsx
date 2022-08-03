@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { useParams } from 'react-router-dom';
 import Web3FormAsso from '../Web3FormAsso';
-import Web3FormCampaign from '../Web3FormCampaign';
 import { Paper } from '@mui/material';
 import './style/DonationForm.css'
 
