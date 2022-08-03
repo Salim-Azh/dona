@@ -37,7 +37,6 @@ function NewCampaignForm() {
         
     }
 
-
     return (
         <div>
         <form onSubmit={handleSubmit}>

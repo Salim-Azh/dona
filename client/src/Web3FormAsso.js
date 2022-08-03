@@ -1,8 +1,9 @@
-import React, {Component} from "react"
-import {getWeb3} from "./getWeb3"
+import React, { Component } from "react"
+import { getWeb3 } from "./getWeb3"
 import map from "./artifacts/deployments/map.json"
-import {getEthereum} from "./getEthereum"
+import { getEthereum } from "./getEthereum"
 import axios from "axios"
+import { Alert } from '@mui/material';
 
 
 class Web3FormAsso extends Component {
@@ -16,7 +17,9 @@ class Web3FormAsso extends Component {
         donationContract: null,
         solidityInput: 0,
         campaignContract: null,
-        association: null
+        association: null,
+        success: false,
+        failure: false
     }
 
     componentDidMount = async () => {
@@ -42,7 +45,7 @@ class Web3FormAsso extends Component {
 
         const data = await axios.get(`http://localhost:8080/api/associations/${this.props.recipient}`);
         const association = data.data;
-        
+
         this.setState({
             web3,
             accounts,
@@ -59,17 +62,17 @@ class Web3FormAsso extends Component {
             return
         }
         console.log(this.state.chainid)
-        
+
         var _chainID = 0;
-        if (this.state.chainid === 42){
+        if (this.state.chainid === 42) {
             _chainID = 42;
         }
-        if (this.state.chainid === 1337){
+        if (this.state.chainid === 1337) {
             _chainID = "dev"
         }
 
-        const solidityStorage = await this.loadContract(_chainID,"SolidityStorage")
-        const donationContract = await this.loadContract(_chainID,"DonationContract")
+        const solidityStorage = await this.loadContract(_chainID, "SolidityStorage")
+        const donationContract = await this.loadContract(_chainID, "DonationContract")
         const campaignContract = await this.loadContract(_chainID, "CampaignContract")
 
         if (!solidityStorage || !donationContract || !campaignContract) {
@@ -89,7 +92,7 @@ class Web3FormAsso extends Component {
 
     loadContract = async (chain, contractName) => {
         // Load a deployed contract instance into a web3 contract object
-        const {web3} = this.state
+        const { web3 } = this.state
 
         // Get the address of the most recent deployment from the deployment map
         let address
@@ -113,33 +116,35 @@ class Web3FormAsso extends Component {
     }
 
     changeSolidity = async (e) => {
-        const {accounts, solidityStorage, solidityInput} = this.state
+        const { accounts, solidityStorage, solidityInput } = this.state
         e.preventDefault()
         const value = parseInt(solidityInput)
         if (isNaN(value)) {
             alert("invalid value")
             return
         }
-        await solidityStorage.methods.set(value).send({from: accounts[0]})
+        await solidityStorage.methods.set(value).send({ from: accounts[0] })
             .on('receipt', async () => {
                 this.setState({
                     solidityValue: await solidityStorage.methods.get().call()
                 })
             })
+            .on('error', () => this.setState({failure: true}));
     }
 
     execTransaction = async (e) => {
-        const {accounts, donationContract, solidityInput} = this.state
+        const { accounts, donationContract, solidityInput } = this.state
         e.preventDefault()
         const value = parseInt(solidityInput) * 1000000000000000000
         if (isNaN(value)) {
             alert("invalid value")
             return
         }
-        await donationContract.methods.donate(this.state.association.account_address).send({from: accounts[0], value: value})
-        //set(value).send({from: accounts[0]})
+        await donationContract.methods.donate(this.state.association.account_address).send({ from: accounts[0], value: value })
+            //set(value).send({from: accounts[0]})
             .on('receipt', async () => {
-                console.log('YESSS')
+                this.setState({ success: true });
+                //window.location.replace(`/associations/${this.props.recipient}`);
             })
     }
 
@@ -178,25 +183,27 @@ class Web3FormAsso extends Component {
                     </p>
                     : null
             }
-            
+
             <h2>Solidity Storage Contract</h2>
             <div>The stored value is: {solidityValue}</div>
-            <br/>
+            <br />
             <form onSubmit={(e) => this.execTransaction(e)}>
                 <div>
                     <label>Change the value to: </label>
-                    <br/>
+                    <br />
                     <input
                         name="solidityInput"
                         type="text"
                         value={solidityInput}
-                        onChange={(e) => this.setState({solidityInput: e.target.value})}
+                        onChange={(e) => this.setState({ solidityInput: e.target.value })}
                     />
-                    <br/>
+                    <br />
                     <button type="submit" disabled={!isAccountsUnlocked}>Submit Association</button>
 
                 </div>
             </form>
+            {this.state.success && (<Alert severity="success">Transaction successfully sent!</Alert>)}
+            {this.state.failure && (<Alert severity="error">Error while sending the transaction...</Alert>)}
         </div>)
     }
 }

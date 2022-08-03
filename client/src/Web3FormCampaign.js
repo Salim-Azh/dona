@@ -2,6 +2,7 @@ import React, {Component} from "react"
 import {getWeb3} from "./getWeb3"
 import map from "./artifacts/deployments/map.json"
 import {getEthereum} from "./getEthereum"
+import { Alert } from '@mui/material';
 
 
 class Web3FormCampaign extends Component {
@@ -14,7 +15,9 @@ class Web3FormCampaign extends Component {
         solidityValue: 0,
         donationContract: null,
         solidityInput: 0,
-        campaignContract: null
+        campaignContract: null,
+        success: false,
+        failure: false
     }
 
     componentDidMount = async () => {
@@ -149,7 +152,7 @@ class Web3FormCampaign extends Component {
         //set(value).send({from: accounts[0]})
             .on('receipt', async () => {
                 let test = await campaignContract.methods.returnMappingValue(this.props.campaign).call();
-                console.log(test);
+                this.setState({ success: true });
             })
     }
 
@@ -207,6 +210,8 @@ class Web3FormCampaign extends Component {
 
                 </div>
             </form>
+            {this.state.success && (<Alert severity="success">Transaction successfully sent!</Alert>)}
+            {this.state.failure && (<Alert severity="error">Error while sending the transaction...</Alert>)}
         </div>)
     }
 }

@@ -1,8 +1,9 @@
-import React, {Component} from "react"
-import {getWeb3} from "./getWeb3"
+import React, { Component } from "react"
+import { getWeb3 } from "./getWeb3"
 import map from "./artifacts/deployments/map.json"
-import {getEthereum} from "./getEthereum"
+import { getEthereum } from "./getEthereum"
 import { Button } from "@mui/material"
+import { Alert } from '@mui/material';
 
 
 class Web3CreateCampaign extends Component {
@@ -11,7 +12,10 @@ class Web3CreateCampaign extends Component {
         web3: null,
         accounts: null,
         chainid: null,
-        campaignContract: null
+        campaignContract: null,
+        success: false,
+        successWithdraw: false,
+        failure: false
     }
 
     componentDidMount = async () => {
@@ -49,12 +53,12 @@ class Web3CreateCampaign extends Component {
             // Wrong Network!
             return
         }
-        
+
         var _chainID = 0;
-        if (this.state.chainid === 42){
+        if (this.state.chainid === 42) {
             _chainID = 42;
         }
-        if (this.state.chainid === 1337){
+        if (this.state.chainid === 1337) {
             _chainID = "dev"
         }
 
@@ -72,7 +76,7 @@ class Web3CreateCampaign extends Component {
 
     loadContract = async (chain, contractName) => {
         // Load a deployed contract instance into a web3 contract object
-        const {web3} = this.state
+        const { web3 } = this.state
 
         // Get the address of the most recent deployment from the deployment map
         let address
@@ -96,23 +100,24 @@ class Web3CreateCampaign extends Component {
     }
 
     createCampaigns = async () => {
-        console.log('PROPS = ', this.props);
-        const {campaignContract, accounts} = this.state
-  
-        if(campaignContract) await campaignContract.methods.createCampaign(this.props.campaign._id,this.props.association.account_address).send({from: accounts[0]})
-        .on('receipt', async () => {
-            let test = await campaignContract.methods.returnMappingValue(this.props.campaign._id).call();
-        })
+        const { campaignContract, accounts } = this.state
+
+        if (campaignContract) await campaignContract.methods.createCampaign(this.props.campaign._id, this.props.association.account_address).send({ from: accounts[0] })
+            .on('receipt', async () => {
+                let test = await campaignContract.methods.returnMappingValue(this.props.campaign._id).call();
+                this.setState({ successCreate: true });
+            })
+
     }
 
     withdraw = async () => {
-        const {campaignContract, accounts} = this.state
-  
-        if(campaignContract) await campaignContract.methods.withdrawFunds(this.props.campaign._id).send({from: accounts[0]})
-        .on('receipt', async () => {
-            let test = await campaignContract.methods.returnMappingValue(this.props.campaign._id).call();
-            console.log(test);
-        })
+        const { campaignContract, accounts } = this.state
+
+        if (campaignContract) await campaignContract.methods.withdrawFunds(this.props.campaign._id).send({ from: accounts[0] })
+            .on('receipt', async () => {
+                let test = await campaignContract.methods.returnMappingValue(this.props.campaign._id).call();
+                this.setState({ successWithdraw: true });
+            })
     }
 
     render() {
@@ -120,7 +125,10 @@ class Web3CreateCampaign extends Component {
             <div>
                 <Button onClick={() => this.createCampaigns()}> Create </Button>
                 <Button onClick={() => this.withdraw()}> Withdraw </Button>
-        </div>
+                {this.state.successCreate && (<Alert severity="success">Campaign successfully created!</Alert>)}
+                {this.state.successWithdraw && (<Alert severity="success">Founds successfully withdrawn!</Alert>)}
+                {this.state.failure && (<Alert severity="error">There has been an error...</Alert>)}
+            </div>
         )
     }
 }
