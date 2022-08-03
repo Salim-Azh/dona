@@ -22,6 +22,7 @@ root.render(
           <Route path='/associations' element={<Associations/>} />
           <Route path='/associations/:id' element={<Association />} />
           <Route path='/associations/:id/donate' element={<DonationForm/>} />
+          <Route path='/associations/:id/:cid/donate' element={<DonationForm/>} />
           <Route path='*' element={
             <h1>
               <p>There's nothing here!</p>

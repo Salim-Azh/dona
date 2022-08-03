@@ -1,11 +1,12 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link as RouterLink } from 'react-router-dom';
 import axios from 'axios';
 import Paper from '@mui/material/Paper';
 import { CircularProgress } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
+import CardActionArea from '@mui/material/CardActionArea';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import CardHeader from '@mui/material/CardHeader';
@@ -46,6 +47,7 @@ export function Association() {
                     {data.campaigns.map((campaign) => (
                         <Grid item xs={4} key={campaign.name}>
                                 <Card variant='outlined' component={Paper}>
+                                <CardActionArea component={RouterLink} to={`/associations/${data._id}/${campaign._id}/donate`}>
                                         <CardHeader
                                             avatar={
                                                 <Avatar aria-label="association">
@@ -59,6 +61,7 @@ export function Association() {
                                                 Campaign
                                             </Typography>
                                         </CardContent>
+                                        </CardActionArea>
                                 </Card>
                         </Grid>
                     ))}

@@ -12,6 +12,7 @@ export function DonationForm() {
         <div className='container'>
             <Paper>
                 <h1>Association: {params.id}</h1>
+                {params.cid && (<h2>Campaign: {params.cid}</h2>)}
                 <Web3Form/>
             </Paper>
         </div>

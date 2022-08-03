@@ -44,7 +44,7 @@ export function Associations() {
                     {data.map((association) => (
                         <Grid item xs={4} key={association._id}>
                                 <Card variant='outlined' component={Paper}>
-                                <CardActionArea component={RouterLink} to={`/associations/${association._id}/donate`}>
+                                <CardActionArea component={RouterLink} to={`/associations/${association._id}`}>
                                         <CardHeader
                                             avatar={
                                                 <Avatar aria-label="association">
