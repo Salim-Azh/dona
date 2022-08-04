@@ -11,7 +11,7 @@ export function CampaignDonationForm() {
     return(
         <div className='container'>
             <Paper>
-                <h1>You're about to participate to the funding of the campaign: {params.id}</h1>
+                <h1>You're about to participate to the funding of a campaign</h1>
                 <Web3FormCampaign campaign={params.id}/>
             </Paper>
         </div>
