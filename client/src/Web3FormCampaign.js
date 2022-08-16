@@ -64,19 +64,15 @@ class Web3FormCampaign extends Component {
             _chainID = "dev"
         }
 
-        const solidityStorage = await this.loadContract(_chainID, "SolidityStorage")
         const donationContract = await this.loadContract(_chainID, "DonationContract")
         const campaignContract = await this.loadContract(_chainID, "CampaignContract")
 
-        if (!solidityStorage || !donationContract || !campaignContract) {
+        if (!donationContract || !campaignContract) {
             return
         }
 
-        const solidityValue = await solidityStorage.methods.get().call()
 
         this.setState({
-            solidityStorage,
-            solidityValue,
             donationContract,
             campaignContract
         })
@@ -108,37 +104,6 @@ class Web3FormCampaign extends Component {
         return new web3.eth.Contract(contractArtifact.abi, address)
     }
 
-    changeSolidity = async (e) => {
-        const { accounts, solidityStorage, solidityInput } = this.state
-        e.preventDefault()
-        const value = parseInt(solidityInput)
-        if (isNaN(value)) {
-            alert("invalid value")
-            return
-        }
-        await solidityStorage.methods.set(value).send({ from: accounts[0] })
-            .on('receipt', async () => {
-                this.setState({
-                    solidityValue: await solidityStorage.methods.get().call()
-                })
-            })
-    }
-
-    execTransaction = async (e) => {
-        const { accounts, donationContract, solidityInput } = this.state
-        e.preventDefault()
-        const value = parseInt(solidityInput) * 1000000000000000000
-        if (isNaN(value)) {
-            alert("invalid value")
-            return
-        }
-        await donationContract.methods.donate('0xfA5a4C6a3221a31a322DfCca50fD433d7D681eb8').send({ from: accounts[0], value: value })
-            //set(value).send({from: accounts[0]})
-            .on('receipt', async () => {
-                console.log('YESSS')
-            })
-    }
-
     execTransactionToCampaign = async (e) => {
         const { accounts, solidityInput, campaignContract } = this.state
         e.preventDefault()
@@ -158,8 +123,7 @@ class Web3FormCampaign extends Component {
     render() {
 
         const {
-            web3, accounts, chainid,
-            solidityStorage, solidityValue, solidityInput
+            web3, accounts, chainid, solidityInput
         } = this.state
 
         if (!web3) {
@@ -169,10 +133,6 @@ class Web3FormCampaign extends Component {
         // <=42 to exclude Kovan, <42 to include Kovan
         if (isNaN(chainid) || chainid < 42) {
             return <div>Wrong Network! Switch to your local RPC "Localhost: 8545" in your Web3 provider (e.g. Metamask)</div>
-        }
-
-        if (!solidityStorage) {
-            return <div>Could not find a deployed contract. Check console for details.</div>
         }
 
         const isAccountsUnlocked = accounts ? accounts.length > 0 : false
