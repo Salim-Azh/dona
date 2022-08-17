@@ -13,7 +13,8 @@ class CampaignDonationForm extends Component {
         solidityInput: 0,
         campaignContract: null,
         success: false,
-        failure: false
+        failure: false,
+        errorMessage: "",
     }
 
     componentDidMount = async () => {
@@ -109,9 +110,12 @@ class CampaignDonationForm extends Component {
         }
         await campaignContract.methods.donateToCampaign(this.props.campaign).send({ from: accounts[0], value: value })
             .on('receipt', async () => {
-                let test = await campaignContract.methods.returnMappingValue(this.props.campaign).call();
+                await campaignContract.methods.returnMappingValue(this.props.campaign).call();
                 this.setState({ success: true });
             })
+            .on('error', (err)=>{
+                this.setState({ failure: true, errorMessage: err.message});
+            });
     }
 
     render() {
@@ -162,7 +166,7 @@ class CampaignDonationForm extends Component {
                     </Grid>
                 </form>
                 {this.state.success && (<Alert severity="success">Transaction successfully sent!</Alert>)}
-                {this.state.failure && (<Alert severity="error">Error while sending the transaction...</Alert>)}
+                {this.state.failure && (<Alert severity="error">{this.state.errorMessage}</Alert>)}
             </div>)
     }
 }

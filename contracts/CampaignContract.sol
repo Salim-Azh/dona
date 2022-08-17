@@ -18,6 +18,7 @@ contract CampaignContract {
     );
 
     struct Campaign {
+        uint valid;
         bool completed; 
         uint nbContributors;
         uint raisedFunds;
@@ -42,12 +43,14 @@ contract CampaignContract {
         newCampaign.raisedFunds = 0;
         newCampaign.nbContributors =0;
         newCampaign.completed = false;
+        newCampaign.valid = 1;
     }
 
     function donateToCampaign(string memory objectID) public payable {
         require(msg.value > 0, 'The donation amount has to be greater than 0');
+        require(campaigns[objectID].valid!=0, 'The campaign needs to be created');
         Campaign storage campaign = campaigns[objectID];
-        require(campaign.completed==false);
+        require(campaign.completed==false, 'This campaign is already closed');
         campaign.balance += msg.value;
         campaign.raisedFunds+=msg.value;
         campaign.nbContributors++;
@@ -56,8 +59,8 @@ contract CampaignContract {
 
     function withdrawFunds(string memory objectID) public{
         Campaign storage campaign = campaigns[objectID];
-        require(msg.sender == campaign.recipient);
-        require(campaign.balance>0);
+        require(msg.sender == campaign.recipient, 'Unauthorized you need to be the recipient');
+        require(campaign.balance>0, 'No funds to be withdrawn');
         campaign.recipient.transfer(campaign.balance);
         emit Withdrawn(msg.sender, address(this), campaign.balance);
         campaign.balance = 0;
