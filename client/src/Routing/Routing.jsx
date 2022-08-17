@@ -6,6 +6,7 @@ import Association from '../components/Association';
 import { AssociationDonation } from '../components/AssociationDonation';
 import { CampaignDonation } from '../components/CampaignDonation';
 import detectEthereumProvider from '@metamask/detect-provider';
+import { RegisterForm } from '../components/RegisterForm';
 import NewCampaignForm from '../components/NewCampaignForm';
 import { useState } from 'react'
 import axios from 'axios';

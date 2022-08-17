@@ -5,7 +5,7 @@ import * as serviceWorker from './serviceWorker';
 import './index.css';
 import CustomHeader from './components/CustomHeader';
 import CustomFooter from './components/Footer';
-import Routing from './routing/Routing';
+import Routing from './Routing/Routing';
 
 const container = document.getElementById('root');
 const root = createRoot(container);
