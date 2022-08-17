@@ -61,7 +61,7 @@ class AssociationDonationFrom extends Component {
         }
         console.log(this.state.chainid)
 
-        var _chainID = 0;
+        let _chainID = 0;
         if (this.state.chainid === 42) {
             _chainID = 42;
         }
