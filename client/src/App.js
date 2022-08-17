@@ -14,10 +14,13 @@ export function App() {
     const [isAssociation, setIsAssociation] = useState(false);
     const [connectedUser, setConnectedUser] = useState({});
     const [loading, setLoading] = useState(true);
+    const [metaMaskAccount, setMetaMaskAccount] = useState();
 
     async function start() {
         const web3 = await getWeb3()
         const accounts = await web3.eth.getAccounts();
+
+        setMetaMaskAccount(accounts[0]);
 
         let user;
         try {
@@ -48,7 +51,8 @@ export function App() {
     }, [isAssociation]);
 
     let content;
-    if(!provider || !connectedUser) content = <p>You need to be connected to your MetaMask account to use this website.</p>
+    if(!provider || !window.ethereum || !metaMaskAccount) content = <p>You need to be connected to your MetaMask account to use this website.</p>
+    else if (!connectedUser) content = <Button to='/register' component={Link} variant='contained'>Create a new account</Button>
     else if (connectedUser && connectedUser.isAssociation) content = connectedUser.isAssociation && (<Button to={`/associations/${connectedUser._id}`} component={Link} variant='contained'>Get started as an Association</Button>)
     else if (connectedUser) content = <Button to='/associations' component={Link} variant='contained'>Get started as a Donator</Button>
     

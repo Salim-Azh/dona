@@ -28,7 +28,7 @@ function NewCampaignForm() {
             description: description
         });
 
-        if (res.status == 200) {
+        if (res.status === 200) {
             setSuccess(true);
             window.location.replace(`/associations/${params.id}`);
         } else {

@@ -5,6 +5,7 @@ import Associations from '../components/Associations';
 import Association from '../components/Association';
 import { DonationForm } from '../components/DonationForm';
 import { CampaignDonationForm } from '../components/CampaignDonationForm';
+import { RegisterForm } from '../components/RegisterForm';
 import detectEthereumProvider from '@metamask/detect-provider';
 import NewCampaignForm from '../components/NewCampaignForm';
 import { useState } from 'react'
@@ -17,6 +18,7 @@ export function Routing() {
     const provider = getProvider();
 
     const [isAssociation, setIsAssociation] = useState(false);
+    const [newUser, setNewUser] = useState(false);
     const [loading, setLoading] = useState(true);
 
     async function start() {
@@ -28,7 +30,10 @@ export function Routing() {
             await axios.get(`http://localhost:8080/api/users?account_address=${accounts[0]}`)
                 .then((response) => {
                     user = response.data[0];
-                    if (user && user.isAssociation) {
+                    if(!user){
+                        setNewUser(true);
+                    }
+                    else if (user && user.isAssociation) {
                         setIsAssociation(true);
                         //window.location.replace(`/associations/${user._id}`);
                         //console.log('reload association')
@@ -54,6 +59,7 @@ export function Routing() {
         <>
             <Routes>
                 <Route path='/' element={<App />} />
+                {provider && newUser && (<Route path='/register' element={<RegisterForm />} />)}
                 {provider && (<Route path='/associations' element={<Associations />} />)}
                 {provider && (<Route path='/associations/:id' element={<Association isAssociation={isAssociation}/>} />)}
                 {provider && (<Route path='/associations/:id/donate' element={<DonationForm />} />)}
