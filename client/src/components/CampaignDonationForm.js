@@ -1,24 +1,17 @@
 import React, { Component } from "react"
-import { getWeb3 } from "./getWeb3"
-import map from "./artifacts/deployments/map.json"
-import { getEthereum } from "./getEthereum"
-import axios from "axios"
-import { Alert, Button, TextField, Grid } from '@mui/material';
+import { getWeb3 } from "../getWeb3"
+import map from "../artifacts/deployments/map.json"
+import { getEthereum } from "../getEthereum"
+import { Alert, TextField, Grid, Button } from '@mui/material';
 
-
-
-class Web3FormAsso extends Component {
+class CampaignDonationForm extends Component {
 
     state = {
         web3: null,
         accounts: null,
         chainid: null,
-        solidityStorage: null,
-        solidityValue: 0,
-        donationContract: null,
         solidityInput: 0,
         campaignContract: null,
-        association: null,
         success: false,
         failure: false
     }
@@ -44,14 +37,10 @@ class Web3FormAsso extends Component {
         // Get the current chain id
         const chainid = parseInt(await web3.eth.getChainId())
 
-        const data = await axios.get(`http://localhost:8080/api/associations/${this.props.recipient}`);
-        const association = data.data;
-
         this.setState({
             web3,
             accounts,
-            chainid,
-            association
+            chainid
         }, await this.loadInitialContracts)
 
     }
@@ -72,16 +61,14 @@ class Web3FormAsso extends Component {
             _chainID = "dev"
         }
 
-        const donationContract = await this.loadContract(_chainID, "DonationContract")
         const campaignContract = await this.loadContract(_chainID, "CampaignContract")
 
-        if (!donationContract || !campaignContract) {
+        if (!campaignContract) {
             return
         }
 
 
         this.setState({
-            donationContract,
             campaignContract
         })
 
@@ -103,28 +90,27 @@ class Web3FormAsso extends Component {
         // Load the artifact with the specified address
         let contractArtifact
         try {
-            contractArtifact = await import(`./artifacts/deployments/${chain}/${address}.json`)
+            contractArtifact = await import(`../artifacts/deployments/${chain}/${address}.json`)
         } catch (e) {
-            console.log(`Failed to load contract artifact "./artifacts/deployments/${chain}/${address}.json"`)
+            console.log(`Failed to load contract artifact "../artifacts/deployments/${chain}/${address}.json"`)
             return undefined
         }
 
         return new web3.eth.Contract(contractArtifact.abi, address)
     }
 
-    execTransaction = async (e) => {
-        const { accounts, donationContract, solidityInput } = this.state
+    execTransactionToCampaign = async (e) => {
+        const { accounts, solidityInput, campaignContract } = this.state
         e.preventDefault()
-        const value = parseInt(solidityInput) * 1000000000000000000
+        const value = parseInt(solidityInput) * 1000000000000000000 //convert wei in ether
         if (isNaN(value)) {
             alert("invalid value")
             return
         }
-        await donationContract.methods.donate(this.state.association.account_address).send({ from: accounts[0], value: value })
-            //set(value).send({from: accounts[0]})
+        await campaignContract.methods.donateToCampaign(this.props.campaign).send({ from: accounts[0], value: value })
             .on('receipt', async () => {
+                let test = await campaignContract.methods.returnMappingValue(this.props.campaign).call();
                 this.setState({ success: true });
-                //window.location.replace(`/associations/${this.props.recipient}`);
             })
     }
 
@@ -145,38 +131,40 @@ class Web3FormAsso extends Component {
 
         const isAccountsUnlocked = accounts ? accounts.length > 0 : false
 
-        return (<div className="Web3Form">
-            <p>
-                Thanks for your interrest in this association's work!
-            </p>
-            {
-                !isAccountsUnlocked ?
-                    <p><strong>Connect with Metamask and refresh the page to
-                        be able to edit the storage fields.</strong>
-                    </p>
-                    : null
-            }
+        return (
+            <div className="Web3Form">
+                <p>
+                    Thanks for for your interrest in this campaign!
+                </p>
+                {
+                    !isAccountsUnlocked ?
+                        <p><strong>Connect with Metamask and refresh the page to
+                            be able to edit the storage fields.</strong>
+                        </p>
+                        : null
+                }
 
-            <br />
-            <form onSubmit={(e) => this.execTransaction(e)}>
-                <Grid container spacing={2} alignItems='center' justifyContent='center' paddingBottom={3}>
-                    <Grid item xs={4}>
-                        <TextField
-                            name="solidityInput"
-                            type="text"
-                            value={solidityInput}
-                            onChange={(e) => this.setState({ solidityInput: e.target.value })}
-                        />
+                <br />
+                <form onSubmit={(e) => this.execTransactionToCampaign(e)}>
+                    <Grid container spacing={2} alignItems='center' justifyContent='center' paddingBottom={3}>
+                        <Grid item xs={4}>
+                            <TextField
+                                name="solidityInput"
+                                type="text"
+                                variant="outlined"
+                                value={solidityInput}
+                                onChange={(e) => this.setState({ solidityInput: e.target.value })}
+                            />
+                        </Grid>
+                        <Grid item>
+                            <Button type="submit" disabled={!isAccountsUnlocked} variant='contained'>Send</Button>
+                        </Grid>
                     </Grid>
-                    <Grid item>
-                        <Button type="submit" disabled={!isAccountsUnlocked} variant='contained'>Send</Button>
-                    </Grid>
-                </Grid>
-            </form>
-            {this.state.success && (<Alert severity="success">Transaction successfully sent!</Alert>)}
-            {this.state.failure && (<Alert severity="error">Error while sending the transaction...</Alert>)}
-        </div>)
+                </form>
+                {this.state.success && (<Alert severity="success">Transaction successfully sent!</Alert>)}
+                {this.state.failure && (<Alert severity="error">Error while sending the transaction...</Alert>)}
+            </div>)
     }
 }
 
-export default Web3FormAsso
+export default CampaignDonationForm
