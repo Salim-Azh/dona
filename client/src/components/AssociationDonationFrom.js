@@ -17,7 +17,8 @@ class AssociationDonationFrom extends Component {
         solidityInput: 0,
         association: null,
         success: false,
-        failure: false
+        failure: false,
+        errorMessage: ''
     }
 
     componentDidMount = async () => {
@@ -117,7 +118,10 @@ class AssociationDonationFrom extends Component {
         }
         await donationContract.methods.donate(this.state.association.account_address).send({ from: accounts[0], value: value })
             .on('receipt', async () => {
-                this.setState({ success: true });
+                this.setState({ success: true, failure: false});
+            })
+            .on('error', async (err)=>{
+                this.setState({ failure: true, success: false, errorMessage: err.message });
             })
     }
 
@@ -167,7 +171,7 @@ class AssociationDonationFrom extends Component {
                 </Grid>
             </form>
             {this.state.success && (<Alert severity="success">Transaction successfully sent!</Alert>)}
-            {this.state.failure && (<Alert severity="error">Error while sending the transaction...</Alert>)}
+            {this.state.failure && (<Alert severity="error">{this.state.errorMessage}</Alert>)}
         </div>)
     }
 }

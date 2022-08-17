@@ -111,10 +111,10 @@ class CampaignDonationForm extends Component {
         await campaignContract.methods.donateToCampaign(this.props.campaign).send({ from: accounts[0], value: value })
             .on('receipt', async () => {
                 await campaignContract.methods.returnMappingValue(this.props.campaign).call();
-                this.setState({ success: true });
+                this.setState({ success: true, failure: false});
             })
             .on('error', (err)=>{
-                this.setState({ failure: true, errorMessage: err.message});
+                this.setState({ failure: true, success: false, errorMessage: err.message});
             });
     }
 
