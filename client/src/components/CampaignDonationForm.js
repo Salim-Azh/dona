@@ -1,22 +1,20 @@
 import React, { Component } from "react"
-import { getWeb3 } from "./getWeb3"
-import map from "./artifacts/deployments/map.json"
-import { getEthereum } from "./getEthereum"
+import { getWeb3 } from "../getWeb3"
+import map from "../artifacts/deployments/map.json"
+import { getEthereum } from "../getEthereum"
 import { Alert, TextField, Grid, Button } from '@mui/material';
 
-class Web3FormCampaign extends Component {
+class CampaignDonationForm extends Component {
 
     state = {
         web3: null,
         accounts: null,
         chainid: null,
-        solidityStorage: null,
-        solidityValue: 0,
-        donationContract: null,
         solidityInput: 0,
         campaignContract: null,
         success: false,
-        failure: false
+        failure: false,
+        errorMessage: "",
     }
 
     componentDidMount = async () => {
@@ -64,20 +62,14 @@ class Web3FormCampaign extends Component {
             _chainID = "dev"
         }
 
-        const solidityStorage = await this.loadContract(_chainID, "SolidityStorage")
-        const donationContract = await this.loadContract(_chainID, "DonationContract")
         const campaignContract = await this.loadContract(_chainID, "CampaignContract")
 
-        if (!solidityStorage || !donationContract || !campaignContract) {
+        if (!campaignContract) {
             return
         }
 
-        const solidityValue = await solidityStorage.methods.get().call()
 
         this.setState({
-            solidityStorage,
-            solidityValue,
-            donationContract,
             campaignContract
         })
 
@@ -99,67 +91,37 @@ class Web3FormCampaign extends Component {
         // Load the artifact with the specified address
         let contractArtifact
         try {
-            contractArtifact = await import(`./artifacts/deployments/${chain}/${address}.json`)
+            contractArtifact = await import(`../artifacts/deployments/${chain}/${address}.json`)
         } catch (e) {
-            console.log(`Failed to load contract artifact "./artifacts/deployments/${chain}/${address}.json"`)
+            console.log(`Failed to load contract artifact "../artifacts/deployments/${chain}/${address}.json"`)
             return undefined
         }
 
         return new web3.eth.Contract(contractArtifact.abi, address)
     }
 
-    changeSolidity = async (e) => {
-        const { accounts, solidityStorage, solidityInput } = this.state
-        e.preventDefault()
-        const value = parseInt(solidityInput)
-        if (isNaN(value)) {
-            alert("invalid value")
-            return
-        }
-        await solidityStorage.methods.set(value).send({ from: accounts[0] })
-            .on('receipt', async () => {
-                this.setState({
-                    solidityValue: await solidityStorage.methods.get().call()
-                })
-            })
-    }
-
-    execTransaction = async (e) => {
-        const { accounts, donationContract, solidityInput } = this.state
-        e.preventDefault()
-        const value = parseInt(solidityInput) * 1000000000000000000
-        if (isNaN(value)) {
-            alert("invalid value")
-            return
-        }
-        await donationContract.methods.donate('0xfA5a4C6a3221a31a322DfCca50fD433d7D681eb8').send({ from: accounts[0], value: value })
-            //set(value).send({from: accounts[0]})
-            .on('receipt', async () => {
-                console.log('YESSS')
-            })
-    }
-
     execTransactionToCampaign = async (e) => {
         const { accounts, solidityInput, campaignContract } = this.state
         e.preventDefault()
-        const value = parseInt(solidityInput) * 1000000000000000000
+        const value = parseInt(solidityInput) * 1000000000000000000 //convert wei in ether
         if (isNaN(value)) {
             alert("invalid value")
             return
         }
         await campaignContract.methods.donateToCampaign(this.props.campaign).send({ from: accounts[0], value: value })
-            //set(value).send({from: accounts[0]})
             .on('receipt', async () => {
-                let test = await campaignContract.methods.returnMappingValue(this.props.campaign).call();
-                this.setState({ success: true });
+                await campaignContract.methods.returnMappingValue(this.props.campaign).call();
+                this.setState({ success: true, failure: false});
             })
+            .on('error', (err)=>{
+                this.setState({ failure: true, success: false, errorMessage: err.message});
+            });
     }
 
     render() {
 
         const {
-            web3, accounts, chainid,
-            solidityStorage, solidityValue, solidityInput
+            web3, accounts, chainid, solidityInput
         } = this.state
 
         if (!web3) {
@@ -169,10 +131,6 @@ class Web3FormCampaign extends Component {
         // <=42 to exclude Kovan, <42 to include Kovan
         if (isNaN(chainid) || chainid < 42) {
             return <div>Wrong Network! Switch to your local RPC "Localhost: 8545" in your Web3 provider (e.g. Metamask)</div>
-        }
-
-        if (!solidityStorage) {
-            return <div>Could not find a deployed contract. Check console for details.</div>
         }
 
         const isAccountsUnlocked = accounts ? accounts.length > 0 : false
@@ -208,9 +166,9 @@ class Web3FormCampaign extends Component {
                     </Grid>
                 </form>
                 {this.state.success && (<Alert severity="success">Transaction successfully sent!</Alert>)}
-                {this.state.failure && (<Alert severity="error">Error while sending the transaction...</Alert>)}
+                {this.state.failure && (<Alert severity="error">{this.state.errorMessage}</Alert>)}
             </div>)
     }
 }
 
-export default Web3FormCampaign
+export default CampaignDonationForm

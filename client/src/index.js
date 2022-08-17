@@ -5,18 +5,18 @@ import * as serviceWorker from './serviceWorker';
 import './index.css';
 import CustomHeader from './components/CustomHeader';
 import CustomFooter from './components/Footer';
-import Routing from './Routing/Routing';
+import Routing from './routing/Routing';
 
 const container = document.getElementById('root');
 const root = createRoot(container);
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <CustomHeader/>
+      <CustomHeader />
       <div className='app-container'>
-       <Routing />
+        <Routing />
       </div>
-      <CustomFooter/>
+      <CustomFooter />
     </BrowserRouter>
   </React.StrictMode>);
 

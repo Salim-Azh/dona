@@ -29,12 +29,8 @@ export function App() {
                     user = response.data[0];
                     if (user && user.isAssociation) {
                         setIsAssociation(true);
-                        //window.location.replace(`/associations/${user._id}`);
-                        //console.log('reload association')
                     } else {
                         setIsAssociation(false);
-                        //console.log('reload donator')
-                        //window.location.replace('/associations');
                     }
                     setConnectedUser(user);
                 })

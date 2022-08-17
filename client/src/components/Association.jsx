@@ -12,12 +12,13 @@ import Grid from '@mui/material/Grid';
 import CardHeader from '@mui/material/CardHeader';
 import Avatar from '@mui/material/Avatar';
 import Web3CreateCampaign from '../Web3CreateCampaign';
-import { Link } from 'react-router-dom';
+import './style/Association.css'
 
-export function Association({isAssociation}) {
+
+export function Association({ isAssociation }) {
 
     const params = useParams();
-    
+
     const [association, setAssociation] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -49,10 +50,11 @@ export function Association({isAssociation}) {
                     {!isAssociation && (<Button variant='contained' component={RouterLink} to={`/associations/${association._id}/donate`}>Donate to the associaton</Button>)}
                 </Grid>
                 <Grid item xs={12}>
-                {isAssociation && (<p>My campaigns: </p>)}
+                    <div className='parent'>
+                        {isAssociation && (<h2 className='child'>My campaigns </h2>)}
+                        {isAssociation && (<Button className='child' component={RouterLink} to={`/associations/${association._id}/campaign`} variant="outlined">Add new campaign</Button>)}
+                    </div>
                     {!isAssociation && (<p>Or check for their campaigns and contribute to one of them specifically:</p>)}
-                    {isAssociation && ( <Button component={Link} to={`/associations/${params.id}/campaign`} variant="outlined">Add new campaign</Button>)}
-                    <br/><br/>
                     <Grid container spacing={2}>
                         {association.campaigns.map((campaign) => (
                             <Grid item xs={3} key={campaign.name}>
@@ -69,9 +71,9 @@ export function Association({isAssociation}) {
                                     </CardActionArea>
                                     <CardContent>
                                         <Typography variant="body2">
-                                            Campaign
+                                            {campaign.description}
                                         </Typography>
-                                        {isAssociation && (<Web3CreateCampaign association={association} campaign={campaign}/>)}
+                                        {isAssociation && (<Web3CreateCampaign association={association} campaign={campaign} />)}
                                     </CardContent>
                                 </Card>
                             </Grid>

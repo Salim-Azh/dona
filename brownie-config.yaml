@@ -13,9 +13,8 @@ networks:
   development:
     cmd_settings:
       mnemonic: this claw debris fuel future fashion cloth velvet road swim dune embody
-      default_balance: 100000000000000000000
-      unlock: 0x38848f3A9e14B51A6dBC9023a94854d144c172cc # optionally add saved brownie account to Ganache
-      # (requires explicit transfer of eth to accounts[-1]) 
+      default_balance: 200000
+      unlock: 0x38848f3A9e14B51A6dBC9023a94854d144c172cc 
 
     update_interval: 60
     verify: False

@@ -2,9 +2,7 @@ import React, { Component } from "react"
 import { getWeb3 } from "./getWeb3"
 import map from "./artifacts/deployments/map.json"
 import { getEthereum } from "./getEthereum"
-import { Button } from "@mui/material"
-import { Alert } from '@mui/material';
-
+import { Button, Alert } from "@mui/material"
 
 class Web3CreateCampaign extends Component {
 

@@ -1,12 +1,13 @@
 import * as React from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router';
+import { useParams } from 'react-router-dom';
 import { useState } from 'react';
 import { Alert, TextField, Button, Grid } from '@mui/material';
 
 
 
 function NewCampaignForm() {
+    const params = useParams();
 
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
@@ -14,13 +15,9 @@ function NewCampaignForm() {
     const [success, setSuccess] = useState(false);
     const [failure, setFailure] = useState(false);
 
-    const params = useParams();
-
-
-
     const handleSubmit = async (_evt) => {
         _evt.preventDefault();
-
+        console.log()
         const res = await axios.put(`http://localhost:8080/api/associations/${params.id}`, {
             name: name,
             aimed_amount: goal,
