@@ -2,7 +2,7 @@ import React from 'react';
 import { getWeb3 } from '../getWeb3';
 import axios from 'axios';
 import { useState } from 'react';
-import { Alert, TextField, Button, Grid, InputLabel, MenuItem, Select } from '@mui/material';
+import { Alert, TextField, Button, Grid, InputLabel, MenuItem, Select, TextareaAutosize } from '@mui/material';
 import { useEffect } from 'react';
 
 export function RegisterForm() {
@@ -15,7 +15,8 @@ export function RegisterForm() {
         email_address: "",
         account_address: "",
         isAssociation: false,
-        domain: ""
+        domain: "",
+        description:"",
     });
 
     useEffect(() => {
@@ -79,11 +80,25 @@ export function RegisterForm() {
                         </Select>
                     </Grid>
                     {formData.isAssociation ? (
-                        <Grid item xs={6}>
-                            <label>
-                                <TextField type='text' variant='outlined' label='Domain' value={formData.domain} onChange={e => setFormData({ ...formData, domain: e.target.value })} />
-                            </label>
-                        </Grid>
+                        <div>
+                            <Grid item xs={6} my={2}>
+                                <label>
+                                    <TextField type='text' variant='outlined' label='Domain' value={formData.domain} onChange={e => setFormData({ ...formData, domain: e.target.value })} />
+                                </label>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <label>
+                                    <TextareaAutosize
+                                        aria-label="minimum height"
+                                        minRows={3}
+                                        placeholder="Describe your mission as an association"
+                                        style={{ width: 300 }}
+                                        value={formData.description}
+                                        onChange={e => setFormData({ ...formData, description: e.target.value })}
+                                    />
+                                </label>
+                            </Grid>
+                        </div>
                     ) : null}
                     <Grid item xs={12}>
                         <Button type="submit" variant='contained' value="register">Register</Button>

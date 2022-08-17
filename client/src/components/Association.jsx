@@ -13,6 +13,7 @@ import CardHeader from '@mui/material/CardHeader';
 import Avatar from '@mui/material/Avatar';
 import Web3CreateCampaign from '../Web3CreateCampaign';
 import './style/Association.css'
+import DisplayCampaignsDonators from './DisplayCampaignsDonators';
 
 
 export function Association({ isAssociation }) {
@@ -54,12 +55,19 @@ export function Association({ isAssociation }) {
                         {isAssociation && (<h2 className='child'>My campaigns </h2>)}
                         {isAssociation && (<Button className='child' component={RouterLink} to={`/associations/${association._id}/campaign`} variant="outlined">Add new campaign</Button>)}
                     </div>
-                    {!isAssociation && (<p>Or check for their campaigns and contribute to one of them specifically:</p>)}
-                    <Grid container spacing={2}>
-                        {association.campaigns.map((campaign) => (
-                            <Grid item xs={3} key={campaign.name}>
-                                <Card variant='outlined' component={Paper}>
-                                    <CardActionArea component={RouterLink} to={isAssociation ? '' : `/campaign/${campaign._id}/donate`}>
+
+                    {!isAssociation && (
+                        <div>
+                            <p>Or check for their campaigns and contribute to one of them specifically:</p>
+                            <DisplayCampaignsDonators association={association}/>
+                        </div>
+                    )}
+
+                    {isAssociation &&(
+                        <Grid container spacing={2}>
+                            {association.campaigns.map((campaign) => (
+                                <Grid item xs={3} key={campaign.name}>
+                                    <Card variant='outlined' component={Paper}>
                                         <CardHeader
                                             avatar={
                                                 <Avatar aria-label="association">
@@ -68,17 +76,18 @@ export function Association({ isAssociation }) {
                                             }
                                             title={campaign.name}
                                         />
-                                    </CardActionArea>
-                                    <CardContent>
-                                        <Typography variant="body2">
-                                            {campaign.description}
-                                        </Typography>
-                                        {isAssociation && (<Web3CreateCampaign association={association} campaign={campaign} />)}
-                                    </CardContent>
-                                </Card>
-                            </Grid>
-                        ))}
-                    </Grid>
+                                        <CardContent>
+                                            <Typography mb={2} variant="body2">
+                                                {campaign.description}
+                                            </Typography>
+                                            <Web3CreateCampaign association={association} campaign={campaign} />
+                                        </CardContent>
+                                    </Card>
+                                </Grid>
+                            ))}
+                        </Grid>
+                    )}
+                    
                 </Grid>
             </Grid>
         </div>

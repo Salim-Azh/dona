@@ -2,7 +2,7 @@ import React, { Component } from "react"
 import { getWeb3 } from "./getWeb3"
 import map from "./artifacts/deployments/map.json"
 import { getEthereum } from "./getEthereum"
-import { Button, Alert } from "@mui/material"
+import { Button, Alert, Chip, Typography } from "@mui/material"
 
 class Web3CreateCampaign extends Component {
 
@@ -13,7 +13,12 @@ class Web3CreateCampaign extends Component {
         campaignContract: null,
         success: false,
         successWithdraw: false,
-        failure: false
+        failure: false,
+        isValid: true,
+        isCompleted: true,
+        goal: 0,
+        nbContributors: 0,
+        raisedFunds: 0
     }
 
     componentDidMount = async () => {
@@ -60,14 +65,25 @@ class Web3CreateCampaign extends Component {
             _chainID = "dev"
         }
 
-        const campaignContract = await this.loadContract(_chainID, "CampaignContract")
+        const campaignContract = await this.loadContract(_chainID, "CampaignContract");
 
         if (!campaignContract) {
             return
         }
 
+        const isValid = await campaignContract.methods.isCampaignValid(this.props.campaign._id).call();
+        const isCompleted = await campaignContract.methods.isCampaignCompleted(this.props.campaign._id).call();
+        const goal = await campaignContract.methods.getGoal(this.props.campaign._id).call();
+        const nbContributors = await campaignContract.methods.getNbContributors(this.props.campaign._id).call();
+        const raisedFunds = await campaignContract.methods.getCampaignRaisedFunds(this.props.campaign._id).call();
+
         this.setState({
-            campaignContract
+            campaignContract,
+            isValid,
+            isCompleted,
+            goal,
+            nbContributors,
+            raisedFunds,
         })
 
     }
@@ -100,12 +116,24 @@ class Web3CreateCampaign extends Component {
     createCampaigns = async () => {
         const { campaignContract, accounts } = this.state
 
-        if (campaignContract) await campaignContract.methods.createCampaign(this.props.campaign._id, this.props.association.account_address).send({ from: accounts[0] })
-            .on('receipt', async () => {
-                let test = await campaignContract.methods.returnMappingValue(this.props.campaign._id).call();
-                this.setState({ successCreate: true });
-            })
+        if (campaignContract) {
 
+            await campaignContract.methods.createCampaign(
+                this.props.campaign._id,
+                this.props.association.account_address,
+                this.props.campaign.aimed_amount
+            ).send({ from: accounts[0] })
+                .on('receipt', async () => {
+                    this.setState({
+                        successCreate: true,
+                        isValid: await campaignContract.methods.isCampaignValid(this.props.campaign._id).call(),
+                        isCompleted: await campaignContract.methods.isCampaignCompleted(this.props.campaign._id).call(),
+                        goal: await campaignContract.methods.getGoal(this.props.campaign._id).call(),
+                        nbContributors: await campaignContract.methods.getNbContributors(this.props.campaign._id).call(),
+                        raisedFunds: await campaignContract.methods.getCampaignRaisedFunds(this.props.campaign._id).call(),
+                    });
+                })
+        }
     }
 
     withdraw = async () => {
@@ -113,19 +141,70 @@ class Web3CreateCampaign extends Component {
 
         if (campaignContract) await campaignContract.methods.withdrawFunds(this.props.campaign._id).send({ from: accounts[0] })
             .on('receipt', async () => {
-                let test = await campaignContract.methods.returnMappingValue(this.props.campaign._id).call();
-                this.setState({ successWithdraw: true });
+                this.setState({
+                    successWithdraw: true,
+                    isCompleted: await campaignContract.methods.isCampaignCompleted(this.props.campaign._id).call()
+                });
             })
     }
 
     render() {
         return (
             <div>
-                <Button onClick={() => this.createCampaigns()}> Create </Button>
-                <Button onClick={() => this.withdraw()}> Withdraw </Button>
+                
+                {
+                    /*The contract is not deployed. The campaign is not open yet*/
+                    !this.state.isValid && (
+                        <div>
+                            <Typography variant="caption" display="block" gutterBottom>
+                                The campaign is only visible to you. You need to create the campaign to make it public and open for funding
+                            </Typography>
+                            <Chip label="Campaign draft" color="warning" variant="outlined" />
+                            <Button onClick={() => this.createCampaigns()}> Create </Button>
+                        </div>
+                    )
+                }
+
+                {
+                    /*The contract is deployed. The campaign is not open for fundings*/
+                    this.state.isValid && !this.state.isCompleted && (
+                        <div>
+                            <Typography variant="body2" gutterBottom>
+                                Goal: {this.state.goal} <br/>
+                                Raised funds: {this.state.raisedFunds / 1000000000000000000 } <br/>
+                                Contributions: {this.state.nbContributors}
+                            </Typography>
+                            <Typography variant="caption" display="block" gutterBottom>
+                                If you withdraw the funds the campaign will be closed
+                            </Typography>
+                            <Chip label="Campaign open" color="success" variant="outlined" />
+                            <Button onClick={() => this.withdraw()}> Withdraw </Button>
+                        </div>
+                    )
+                }
+
+                {
+                    /*The campaign is closed. The funds have been withdrawn*/
+                    this.state.isCompleted && (
+                        <div>
+                            <Typography variant="body2" gutterBottom>
+                                Goal: {this.state.goal} <br/>
+                                Raised funds: {this.state.raisedFunds / 1000000000000000000 } <br/>
+                                Contributions: {this.state.nbContributors}
+                            </Typography>
+                            <Typography variant="caption" display="block" gutterBottom>
+                                Funds withdrawn
+                            </Typography>
+                            <Chip label="Campaign closed" color="default" variant="outlined" />
+                        </div>
+                    )
+                }
+
+                {this.state.failure && (<Alert severity="error">There has been an error...</Alert>)}
+
                 {this.state.successCreate && (<Alert severity="success">Campaign successfully created!</Alert>)}
                 {this.state.successWithdraw && (<Alert severity="success">Founds successfully withdrawn!</Alert>)}
-                {this.state.failure && (<Alert severity="error">There has been an error...</Alert>)}
+
             </div>
         )
     }

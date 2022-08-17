@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Routes, Route } from 'react-router-dom'
 import App from '../App';
 import Associations from '../components/Associations';
@@ -8,7 +8,6 @@ import { CampaignDonation } from '../components/CampaignDonation';
 import detectEthereumProvider from '@metamask/detect-provider';
 import { RegisterForm } from '../components/RegisterForm';
 import NewCampaignForm from '../components/NewCampaignForm';
-import { useState } from 'react'
 import axios from 'axios';
 import { getWeb3 } from '../getWeb3';
 
