@@ -54,7 +54,7 @@ function NewCampaignForm() {
                         </label>
                     </Grid>
                     <Grid item>
-                        <Button type="submit" variant='contained' value="Create Campaign">Create</Button>
+                        <Button type="submit" variant='contained' value="Create Campaign">Add Campaign</Button>
                     </Grid>
                 </Grid>
             </form>
