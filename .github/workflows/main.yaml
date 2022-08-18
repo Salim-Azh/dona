@@ -45,5 +45,5 @@ jobs:
         echo export PRIVATE_KEY=${{ secrets.PRIVATE_KEY }} >> .env
         cat .env
 
-    - name: Run Tests
-      run: brownie test
+    #- name: Run Tests
+      #run: brownie test
