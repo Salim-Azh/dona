@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { Alert, TextField, Button, Grid } from '@mui/material';
 
 
-
+/** React functionnal component that displays a form which allows an association to create a new campaign. */
 function NewCampaignForm() {
     const params = useParams();
 

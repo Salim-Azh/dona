@@ -5,8 +5,8 @@ import { useState } from 'react';
 import { Alert, TextField, Button, Grid, InputLabel, MenuItem, Select, TextareaAutosize } from '@mui/material';
 import { useEffect } from 'react';
 
+/** React functionnal component that displays a form used by a user to register. */
 export function RegisterForm() {
-
     //const [isAssociation, setIsAssociation] = useState(false);
     const [success, setSuccess] = useState(false);
     const [failure, setFailure] = useState(false);

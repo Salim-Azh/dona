@@ -5,6 +5,9 @@ import { getEthereum } from "../getEthereum"
 import { Link as RouterLink } from 'react-router-dom';
 import { Avatar, Card, CardActionArea, CardContent, CardHeader, Grid, Paper, Typography } from "@mui/material"
 
+/** React component that displays an association's campaign. 
+ * It can only be seen by the association it self because it allows to interact with the campaign.
+ * It uses Web3JS to interact with an Ethereum blockchain node. */
 class DisplayCampaignsDonators extends Component {
 
     state = {

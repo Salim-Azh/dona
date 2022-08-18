@@ -12,6 +12,7 @@ import Grid from '@mui/material/Grid';
 import CardHeader from '@mui/material/CardHeader';
 import Avatar from '@mui/material/Avatar';
 
+/** React functionnal component that displays a list of all the associations registered. */
 export function Associations() {
 
     const [data, setData] = useState(null);

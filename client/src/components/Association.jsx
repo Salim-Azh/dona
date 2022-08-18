@@ -15,7 +15,9 @@ import Web3CreateCampaign from '../Web3CreateCampaign';
 import './style/Association.css'
 import DisplayCampaignsDonators from './DisplayCampaignsDonators';
 
-
+/** React functionnal component used to display an association's page. 
+ * The data displayed and the actions available to the user defer depending on it's role (whether he's a donator or the association's representative), identified by the isAssociation parameter.
+ */
 export function Association({ isAssociation }) {
 
     const params = useParams();

@@ -4,6 +4,9 @@ import map from "../artifacts/deployments/map.json"
 import { getEthereum } from "../getEthereum"
 import { Alert, TextField, Grid, Button } from '@mui/material';
 
+/** React component that manages the donation form from a donator to an association's campaign. 
+ * It is only used inside of the CampaignDonation component.
+ * It uses Web3JS to interact with an Ethereum blockchain node. */
 class CampaignDonationForm extends Component {
 
     state = {

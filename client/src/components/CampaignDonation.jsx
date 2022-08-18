@@ -4,8 +4,9 @@ import CampaignDonationForm from './CampaignDonationForm';
 import { Paper } from '@mui/material';
 import './style/DonationForm.css'
 
+
+/** React component that displays a donation form, used by a user to make a donation to an association's campaign. */
 export function CampaignDonation() {
-    //TODO: Insert logic to check if the user is connected via Metamask and the payment logic (see in Web3 component)
     const params = useParams();
 
     return(

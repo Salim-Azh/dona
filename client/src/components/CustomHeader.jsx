@@ -7,6 +7,7 @@ import IconButton from '@mui/material/IconButton';
 import AccountCirle from '@mui/icons-material/Person';
 import { Link } from 'react-router-dom';
 
+/** React functionnal component that displays the website's header. */
 export function CustomHeader() {
 
     const isConnected = window.ethereum !== undefined;

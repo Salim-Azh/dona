@@ -5,7 +5,9 @@ import { getEthereum } from "../getEthereum"
 import axios from "axios"
 import { Alert, Button, TextField, Grid } from '@mui/material';
 
-
+/** React component that manages the donation form from a donator to an association. 
+ * It is only used inside of the AssociationDonation component.
+ * It uses Web3JS to interact with an Ethereum blockchain node. */
 class AssociationDonationFrom extends Component {
 
     state = {
@@ -59,7 +61,6 @@ class AssociationDonationFrom extends Component {
             // Wrong Network!
             return
         }
-        console.log(this.state.chainid)
 
         let _chainID = 0;
         if (this.state.chainid === 42) {

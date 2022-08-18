@@ -1,22 +1,26 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.15;
 
+/** This smart contract handles campaign related data and interaction. */
 contract CampaignContract {
 
     address payable public owner;
 
+    /** Donation event emitted whenever a donation is sent. */
     event Donation(
         address indexed to,
         address indexed from,
         uint amount
     );
 
+    /** Withdrawn event emitted whenever a campaign's funds are withdrawn by it's association. */
     event Withdrawn(
         address indexed to,
         address indexed from,
         uint amount
     );
 
+    /** Representation of a campaign's blockchain stored data. */
     struct Campaign {
         bool valid;
         bool completed; 
@@ -34,8 +38,8 @@ contract CampaignContract {
         owner = payable(msg.sender);
     }
 
+    /** Creates a new campaign which will be stored on the blockchain.*/
     function createCampaign(string memory objectID ,address payable recipient, uint goal) public{
-        //require(msg.sender is a charity);
         Campaign storage newCampaign = campaigns[objectID];
         newCampaign.recipient = recipient;
         newCampaign.balance = 0;
@@ -46,6 +50,7 @@ contract CampaignContract {
         newCampaign.goal = goal;
     }
 
+    /** Allows a donator to proceed to a donation to an association's campaign. */
     function donateToCampaign(string memory objectID) public payable {
         require(msg.value > 0, 'The donation amount has to be greater than 0');
         require(campaigns[objectID].valid == true, 'The campaign needs to be created');
@@ -57,6 +62,7 @@ contract CampaignContract {
         emit Donation(campaign.recipient, msg.sender, msg.value);
     }
 
+    /** Allows an association to withdraw the total amount of a Campaign's collected founds. */
     function withdrawFunds(string memory objectID) public{
         Campaign storage campaign = campaigns[objectID];
         require(msg.sender == campaign.recipient, 'Unauthorized you need to be the recipient');
@@ -67,10 +73,13 @@ contract CampaignContract {
         campaign.completed=true;
     }
 
+    /** Indicates if a campaign is valid. A valid campaign is a campaign that has been published by it's association.
+      */
     function isCampaignValid(string memory objectID)public view returns(bool){
         return campaigns[objectID].valid;
     }
 
+    /** Indicates if a campaign is completed. A campaign is considered completed as soon as it's association has withdrawn the collected founds.  */
     function isCampaignCompleted(string memory objectID)public view returns(bool){
         return campaigns[objectID].completed;
     }

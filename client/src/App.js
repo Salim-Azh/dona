@@ -6,6 +6,7 @@ import { getWeb3 } from './getWeb3';
 import detectEthereumProvider from '@metamask/detect-provider';
 import { Button, CircularProgress } from '@mui/material';
 
+/** React functionnal component that represents the application entrypoint. */
 export function App() {
 
     async function getProvider() { await detectEthereumProvider() };

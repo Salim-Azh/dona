@@ -4,6 +4,10 @@ import map from "./artifacts/deployments/map.json"
 import { getEthereum } from "./getEthereum"
 import { Button, Alert, Chip, Typography } from "@mui/material"
 
+/** React component that allows an association to publish a draft campaign.
+ * It is only used inside of the Association component.
+ * It uses Web3Js to interact with an Ethereum blockchain node.
+ */
 class Web3CreateCampaign extends Component {
 
     state = {
@@ -157,10 +161,10 @@ class Web3CreateCampaign extends Component {
                     !this.state.isValid && (
                         <div>
                             <Typography variant="caption" display="block" gutterBottom>
-                                The campaign is only visible to you. You need to create the campaign to make it public and open for funding
+                                The campaign is only visible to you. You need to publish the campaign to make it public and open for funding
                             </Typography>
                             <Chip label="Campaign draft" color="warning" variant="outlined" />
-                            <Button onClick={() => this.createCampaigns()}> Create </Button>
+                            <Button onClick={() => this.createCampaigns()}> Publish </Button>
                         </div>
                     )
                 }
