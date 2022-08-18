@@ -11,6 +11,7 @@ import NewCampaignForm from '../components/NewCampaignForm';
 import axios from 'axios';
 import { getWeb3 } from '../getWeb3';
 
+/** React functionnal component that encapsulates the front-end routing logic. */
 export function Routing() {
 
     async function getProvider() { await detectEthereumProvider() };
